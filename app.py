@@ -21,14 +21,24 @@ def create_app():
         db.create_all()
         migrate.init_app(app, db)
 
-    # from routes import auth, students, grades
-    # app.register_blueprint(auth.bp)
-    # app.register_blueprint(students.bp)
-    # app.register_blueprint(grades.bp)
+    from routes import users, teachers, students
+
+    app.register_blueprint(users.auth_bp, url_prefix='/api')
+    app.register_blueprint(teachers.teacher_bp, url_prefix='/api')
+    app.register_blueprint(students.student_bp, url_prefix='/api')
+    
 
     @app.route('/')
-    def home():
-        return jsonify({'message': 'Welcome to the Student Management System!'})
+    def list_routes():
+        routes = []
+        for rule in app.url_map.iter_rules():
+            if rule.endpoint != 'static':
+                routes.append({
+                    'endpoint': rule.endpoint,
+                    'methods': list(rule.methods),
+                    'url': rule.rule
+                })
+        return jsonify(routes)
     
     return app
 

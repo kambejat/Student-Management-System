@@ -31,8 +31,8 @@ class Student(db.Model):
     first_name = db.Column(db.String(50), nullable=False)
     last_name = db.Column(db.String(50), nullable=False)
     date_of_birth = db.Column(db.Date, nullable=False)
-    enrollment_year = db.Column(db.Integer, nullable=False)
-    grade_level = db.Column(db.Enum('1', '2', '3', '4'), nullable=False)
+    enrollment_year = db.Column(db.Date, nullable=False)
+    grade_level = db.Column(db.Enum('F1', 'F2', 'F3', 'F4'), nullable=False)
     class_id = db.Column(db.Integer, db.ForeignKey('classes.id'), nullable=False)
 
     user = db.relationship('User', backref='student', lazy=True)
@@ -60,7 +60,7 @@ class Subject(db.Model):
     __tablename__ = 'subjects'
     subject_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    grade_level = db.Column(db.Enum('1', '2', '3', '4'), nullable=False)
+    grade_level = db.Column(db.Enum('F1', 'F2', 'F3', 'F4'), nullable=False)
 
 
 class Classes(db.Model):
@@ -89,8 +89,8 @@ class Teacher(db.Model):
 class Result(db.Model):
     __tablename__ = 'results'
     result_id = db.Column(db.Integer, primary_key=True)
-    student_id = db.Column(db.Integer, db.ForeignKey('students.id'), nullable=False)
-    subject_id = db.Column(db.Integer, db.ForeignKey('subjects.id'), nullable=False)
+    student_id = db.Column(db.Integer, db.ForeignKey('students.student_id'), nullable=False)
+    subject_id = db.Column(db.Integer, db.ForeignKey('subjects.subject_id'), nullable=False)
     term = db.Column(db.Enum('Term 1', 'Term 2', 'Term 3'), nullable=False)
     grade = db.Column(db.String(2), nullable=False)
     exam_date = db.Column(db.Date, nullable=False)
@@ -103,7 +103,7 @@ class Result(db.Model):
 class Attendance(db.Model):
     __tablename__ = 'Attendance'
     attendance_id = db.Column(db.Integer, primary_key=True)
-    student_id = db.Column(db.Integer, db.ForeignKey('students.id'), nullable=False)
+    student_id = db.Column(db.Integer, db.ForeignKey('students.student_id'), nullable=False)
     class_id = db.Column(db.Integer, db.ForeignKey('classes.id'), nullable=False)
     attendance_date = db.Column(db.Date, nullable=False)
     status = db.Column(db.Enum('Present', 'Absent', 'Late'), nullable=False)

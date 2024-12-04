@@ -12,8 +12,8 @@ student_parser.add_argument("user_id", type=int, required=True, help="User ID is
 student_parser.add_argument("first_name", type=str, required=True, help="First name is required")
 student_parser.add_argument("last_name", type=str, required=True, help="Last name is required")
 student_parser.add_argument("date_of_birth", type=str, required=True, help="Date of birth is required (YYYY-MM-DD)")
-student_parser.add_argument("enrollment_year", type=int, required=True, help="Enrollment year is required")
-student_parser.add_argument("grade_level", type=str, choices=['1', '2', '3', '4'], required=True, help="Grade level must be 1, 2, 3, or 4")
+student_parser.add_argument("enrollment_year", type=str, required=True, help="Enrollment year is required (YYYY-MM-DD)")
+student_parser.add_argument("grade_level", type=str, choices=['F1', 'F2', 'F3', 'F4'], required=True, help="Grade level must be F1, F2, F3, or F4")
 student_parser.add_argument("class_id", type=int, required=True, help="Class ID is required")
 
 # Define fields for marshaling the response
@@ -23,7 +23,7 @@ student_fields = {
     'first_name': fields.String,
     'last_name': fields.String,
     'date_of_birth': fields.String,
-    'enrollment_year': fields.Integer,
+    'enrollment_year': fields.String,
     'grade_level': fields.String,
     'class_id': fields.Integer,
 }
