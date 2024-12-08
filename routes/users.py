@@ -60,7 +60,7 @@ class UserLogin(Resource):
 
 
 class UserResource(Resource):
-    @jwt_required()
+    # @jwt_required()
     def get(self, user_id=None):
         """Retrieve a specific user or all users."""
         if user_id:
@@ -88,12 +88,14 @@ class UserResource(Resource):
             for user in users
         ]
 
-    @jwt_required()
+    # @jwt_required()
     def post(self):
         """Create a new user."""
         args = user_parser.parse_args()
+        
         if User.query.filter_by(username=args["username"]).first():
             return {"message": "Username already exists"}, 400
+        
         if User.query.filter_by(email=args["email"]).first():
             return {"message": "Email already exists"}, 400
 
@@ -109,7 +111,7 @@ class UserResource(Resource):
 
         return {"message": "User created successfully", "user_id": user.user_id}, 201
 
-    @jwt_required()
+    # @jwt_required()
     def patch(self, user_id):
         """Update an existing user."""
         user = User.query.get(user_id)
@@ -138,7 +140,7 @@ class UserResource(Resource):
         db.session.commit()
         return {"message": "User updated successfully"}
 
-    @jwt_required()
+    # @jwt_required()
     def delete(self, user_id):
         """Delete a user."""
         user = User.query.get(user_id)
