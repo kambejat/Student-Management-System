@@ -51,10 +51,21 @@ class UserLogin(Resource):
         })
         refresh_token = create_refresh_token(identity={"user_id": user.user_id})
         
-        return {
-            "message": "Login successful",
+        user_information = {
+            "user_id": user.user_id,
+            "username": user.username,
+            "roles": [Role.query.get(role_id).name for role_id in role_ids],
+            "permissions": permission_names,
+            "email": user.email,
+            "isActive": user.isActive,
+            "created_at": user.created_at.isoformat(),
             "access_token": access_token,
             "refresh_token": refresh_token
+        }
+        
+        return {
+            "message": "Login successful",
+            "user_info": user_information
         }, 200
 
 
@@ -152,5 +163,22 @@ class UserResource(Resource):
         return {"message": "User deleted successfully"}
 
 
+class TokenRefresh(Resource):
+    @jwt_required(refresh=True)
+    def post(self):
+        # Get the identity of the user from the refresh token
+        current_user = get_jwt_identity()
+
+        # Generate a new access token
+        new_access_token = create_access_token(identity=current_user)
+
+        return {
+            "message": "Token refreshed successfully",
+            "access_token": new_access_token
+        }, 200
+
+
+# Add the refresh token endpoint to the API
+api.add_resource(TokenRefresh, "/refresh-token")
 api.add_resource(UserLogin, "/login")
 api.add_resource(UserResource, "/users", "/users/<int:user_id>")
