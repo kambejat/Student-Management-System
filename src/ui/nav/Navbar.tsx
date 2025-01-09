@@ -62,7 +62,7 @@ const Navbar: React.FC<SidebarProps> = ({ toggleSidebar, handleTabChange }) => {
   return (
     <>
       <nav
-        className={`fixed top-0 z-50 w-full shadow-sm bg-[#efefef] border-gray-200" dark:bg-gray-800`}
+        className={`fixed top-0 z-50 w-full shadow-sm bg-[#39337c] border-gray-200" dark:bg-gray-800`}
       >
         <div className="px-2 py-2 lg:px-1 lg:pl-3">
           <div className="flex items-center justify-between">
