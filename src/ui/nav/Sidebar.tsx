@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import AuthContext from "../../context/AuthContext";
-import { StudentIcon } from "../icon/icons";
+import { AccountIcon, ParentIcon, StudentIcon, SubjectIcon, TeacherIcon } from "../icon/icons";
 
 interface SidebarProps {
     activeTab: number;
@@ -47,6 +47,41 @@ const Sidebar: React.FC<SidebarProps> = ({
             >
                <StudentIcon className={` ${activeTab === 2? activeIconTextClass : "text-white"}`} />
                 <span className={`text-sm ${activeTab === 2 ? "dark:text-[#d11544]  text-[#d11544]" : "text-white"}`}>Students</span>
+            </li>
+            <li
+            className={`${activeTab === 3? activeTabClass : ""} flex items-center rounded-sm p-2 space-x-3 hover:bg-[#db3d3d] dark:hover:bg-[#168677] dark:hover:text-white`}
+            onClick={() => handleTabChange(3)}
+            >
+               <ParentIcon className={` ${activeTab === 3? activeIconTextClass : "text-white"}`}/>
+                <span className={`text-sm ${activeTab === 3 ? "dark:text-[#d11544]  text-[#d11544]" : "text-white"}`}>Parents</span>
+            </li>
+            <li
+            className={`${activeTab === 4? activeTabClass : ""} flex items-center rounded-sm p-2 space-x-3 hover:bg-[#db3d3d] dark:hover:bg-[#168677] dark:hover:text-white`}
+            onClick={() => handleTabChange(4)}
+            >
+               <TeacherIcon className={` ${activeTab === 4? activeIconTextClass : "text-white"}`}/>
+                <span className={`text-sm ${activeTab === 4 ? "dark:text-[#d11544]  text-[#d11544]" : "text-white"}`}>Teachers</span>
+            </li>
+            <li
+            className={`${activeTab === 5? activeTabClass : ""} flex items-center rounded-sm p-2 space-x-3 hover:bg-[#db3d3d] dark:hover:bg-[#168677] dark:hover:text-white`}
+            onClick={() => handleTabChange(5)}
+            >
+               <AccountIcon className={` ${activeTab === 5? activeIconTextClass : "text-white"}`}/>
+                <span className={`text-sm ${activeTab === 5 ? "dark:text-[#d11544]  text-[#d11544]" : "text-white"}`}>Account</span>
+            </li>
+            <li
+            className={`${activeTab === 6? activeTabClass : ""} flex items-center rounded-sm p-2 space-x-3 hover:bg-[#db3d3d] dark:hover:bg-[#168677] dark:hover:text-white`}
+            onClick={() => handleTabChange(6)}
+            >
+               <SubjectIcon className={` ${activeTab === 6? activeIconTextClass : "text-white"}`}/>
+                <span className={`text-sm ${activeTab === 6 ? "dark:text-[#d11544]  text-[#d11544]" : "text-white"}`}>Subject</span>
+            </li>
+            <li
+            className={`${activeTab === 7? activeTabClass : ""} flex items-center rounded-sm p-2 space-x-3 hover:bg-[#db3d3d] dark:hover:bg-[#178777] dark:hover:text-white`}
+            onClick={() => handleTabChange(7)}
+            >
+               <ParentIcon className={` ${activeTab === 7? activeIconTextClass : "text-white"}`}/>
+                <span className={`text-sm ${activeTab === 7 ? "dark:text-[#d11544]  text-[#d11544]" : "text-white"}`}>User Management</span>
             </li>
          </ul>
          </div>

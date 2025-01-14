@@ -3,6 +3,7 @@ import AuthContext from "../../context/AuthContext";
 import useAuth from "../../context/useAuth";
 import useDarkSide from "../../hooks/useDarkSide";
 import { Link } from "react-router-dom";
+import { StudentManagementLoginIcon } from "../icon/icons";
 
 interface SidebarProps {
   toggleSidebar: () => void;
@@ -94,7 +95,7 @@ const Navbar: React.FC<SidebarProps> = ({ toggleSidebar, handleTabChange }) => {
                 to="/dashboard"
                 className="flex items-center  text-sm text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
               >
-                <img className="w-10 h-10" alt="Logo" />{" "}
+                <StudentManagementLoginIcon />
               </Link>
               <span className="self-center italic text-[#ffffff] text-lg font-semibold sm:text-lg whitespace-nowrap dark:text-white">
                 StdSyS

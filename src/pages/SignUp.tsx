@@ -6,6 +6,8 @@ interface SignupFormData {
   email: string;
   password: string;
   confirmPassword: string;
+  firstName: string;
+  lastName: string;
   role: string;
   isActive: boolean;
 }
@@ -16,6 +18,8 @@ const SignupForm: React.FC = () => {
     email: "",
     password: "",
     confirmPassword: "",
+    firstName: "",
+    lastName: "",
     role: "",
     isActive: true,
   });
@@ -43,6 +47,8 @@ const SignupForm: React.FC = () => {
         username: formData.username,
         email: formData.email,
         password: formData.password,
+        first_name: formData.firstName, // send first name
+        last_name: formData.lastName,   // send last name
         role: formData.role,
         isActive: formData.isActive,
       });
@@ -54,12 +60,15 @@ const SignupForm: React.FC = () => {
           email: "",
           password: "",
           confirmPassword: "",
+          firstName: "",
+          lastName: "",
           role: "",
           isActive: true,
         });
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || "An error occurred during signup.");
+      const errorMessage = err.response?.data?.message || "An error occurred during signup.";
+      setError(errorMessage);
     }
   };
 
@@ -114,6 +123,28 @@ const SignupForm: React.FC = () => {
           />
         </div>
         <div>
+          <label className="block text-sm font-medium text-gray-600">First Name</label>
+          <input
+            type="text"
+            name="firstName"
+            value={formData.firstName}
+            onChange={handleChange}
+            required
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-600">Last Name</label>
+          <input
+            type="text"
+            name="lastName"
+            value={formData.lastName}
+            onChange={handleChange}
+            required
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+          />
+        </div>
+        <div>
           <label className="block text-sm font-medium text-gray-600">Role</label>
           <select
             name="role"
@@ -124,7 +155,9 @@ const SignupForm: React.FC = () => {
           >
             <option value="">Select a role</option>
             <option value="admin">Admin</option>
-            <option value="user">User</option>
+            <option value="teacher">Teacher</option>
+            <option value="parent">Parent</option>
+            <option value="student">Student</option>
           </select>
         </div>
         <div className="flex items-center">
