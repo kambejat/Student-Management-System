@@ -1,4 +1,5 @@
-from flask import Blueprint, request
+import io
+from flask import Blueprint, request, send_file
 from flask_restful import Resource, Api, reqparse
 from flask_jwt_extended import (
     create_access_token,
@@ -7,6 +8,7 @@ from flask_jwt_extended import (
     get_jwt_identity,
 )
 from werkzeug.security import check_password_hash
+from openpyxl import Workbook
 from models import db, User, UserRole, RolePermission, Permission, Role, AuditLog
 
 auth_bp = Blueprint("auth", __name__)
@@ -73,7 +75,58 @@ class UserLogin(Resource):
 
 class UserResource(Resource):
     def get(self, user_id=None):
-        """Retrieve a specific user or all users."""
+        """Retrieve a specific user, all users, or export users to Excel."""
+        export_to_excel = request.args.get("export", "false").lower() == "true"
+
+        if export_to_excel:
+            # Export all users to Excel
+            users = User.query.all()
+
+            # Create an Excel workbook
+            workbook = Workbook()
+            sheet = workbook.active
+            sheet.title = "Users"
+
+            # Add headers
+            headers = [
+                "User ID",
+                "Username",
+                "First Name",
+                "Last Name",
+                "Role",
+                "Email",
+                "Is Active",
+                "Created At",
+            ]
+            sheet.append(headers)
+
+            # Add user data
+            for user in users:
+                sheet.append([
+                    user.user_id,
+                    user.username,
+                    user.first_name,
+                    user.last_name,
+                    user.role,
+                    user.email,
+                    user.isActive,
+                    user.created_at.isoformat(),
+                ])
+
+            # Save the workbook to a bytes buffer
+            output = io.BytesIO()
+            workbook.save(output)
+            output.seek(0)
+
+            # Return the Excel file as a response
+            return send_file(
+                output,
+                as_attachment=True,
+                download_name="users.xlsx",
+                mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+
+        # Regular GET logic for retrieving users
         if user_id:
             user = User.query.get(user_id)
             if not user:
@@ -102,7 +155,7 @@ class UserResource(Resource):
             }
             for user in users
         ]
-
+    
     def post(self):
         """Create a new user."""
         args = user_parser.parse_args()

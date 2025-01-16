@@ -69,13 +69,11 @@ class StudentResource(Resource):
 
 
 class StudentListResource(Resource):
-    @marshal_with(student_fields)
     def get(self):
         """Get all students"""
         students = Student.query.all()
         return students
 
-    @marshal_with(student_fields)
     def post(self):
         """Create a new student"""
         args = student_parser.parse_args()

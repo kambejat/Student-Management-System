@@ -178,9 +178,27 @@ class FeesCollection(db.Model):
     amount_paid = db.Column(db.Float, nullable=False)
     payment_date = db.Column(db.Date, nullable=False)
     payment_method = db.Column(db.String(50), nullable=False)  # e.g., "Cash", "Bank Transfer"
+    academic_year = db.Column(db.String(9), nullable=False)  # Format: "2024-2025"
     created_at = db.Column(db.DateTime, server_default=db.func.now())
 
     student = db.relationship('Student', backref='fees_collection', lazy=True)
+
+    @property
+    def balance(self):
+        """Calculate the remaining balance for a student's yearly fee."""
+        student = self.student
+        yearly_fee = (
+            db.session.query(YearlyFees.fee_amount)
+            .filter_by(academic_year=self.academic_year, grade_level=student.grade_level)
+            .scalar()
+        )
+        total_paid = (
+            db.session.query(db.func.sum(FeesCollection.amount_paid))
+            .filter_by(student_id=self.student_id, academic_year=self.academic_year)
+            .scalar()
+        ) or 0
+
+        return yearly_fee - total_paid
 
     @validates('reference_number')
     def generate_reference_number(self, key, reference_number):
@@ -205,3 +223,13 @@ class Expense(db.Model):
         return f"<Expense {self.expense_type}: {self.amount} on {self.expense_date}>"
     
 
+class YearlyFees(db.Model):
+    __tablename__ = 'yearly_fees'
+    fee_id = db.Column(db.Integer, primary_key=True)
+    academic_year = db.Column(db.String(9), nullable=False)  # Format: "2024-2025"
+    grade_level = db.Column(db.Enum('F1', 'F2', 'F3', 'F4'), nullable=False)
+    fee_amount = db.Column(db.Float, nullable=False)
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+
+    def __repr__(self):
+        return f"<YearlyFees {self.academic_year} - {self.grade_level}: {self.fee_amount}>"

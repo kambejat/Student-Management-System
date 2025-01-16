@@ -3,7 +3,7 @@ from flask_restful import reqparse, fields, marshal_with, Resource, Api
 from models import db, Subject
 
 
-subject_bp = Blueprint()
+subject_bp = Blueprint("subjects", __name__)
 api = Api(subject_bp)
 
 subject_parser = reqparse.RequestParser()
