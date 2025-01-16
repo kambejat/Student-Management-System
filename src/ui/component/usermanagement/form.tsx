@@ -24,7 +24,7 @@ interface ModalData {
 interface UserFormProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: () => void;
+  onSave: (event: React.FormEvent) => void;
   modalData: ModalData;
   handleInputChange: (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -47,24 +47,27 @@ const UserForm: React.FC<UserFormProps> = ({
 }) => {
   if (!isOpen) return null;
 
-  const handleSave = () => {
+  const handleSave = (event: React.FormEvent) => {
+    event.preventDefault();    
     if (!isEditMode) {
       // Reset permissions for new users
       modalData.permissions = [];
     }
-    onSave(); // Call the parent save handler
+    onSave(event); // Call the parent save handler
   };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-2 sm:p-4 rounded-lg shadow-md w-full max-w-2xl mx-2">
-        <h2 className="text-2xl font-semibold text-gray-700 mb-6">
-          {isEditMode ? "Edit User" : "Add User"}
-        </h2>
-        <form className="space-y-4">
+      <div className="bg-white dark:bg-gray-800 p-1 sm:p-4 rounded-md shadow-md w-full max-w-2xl mx-2">
+        <div className="flex items-start justify-between p-2 border-b rounded-t dark:border-gray-700">
+          <h2 className="text-2xl font-semibold text-gray-700 mb-1">
+            {isEditMode ? "Edit User" : "Add User"}
+          </h2>
+        </div>
+        <form className="p-2 space-y-2">
           {/* Username */}
           <div>
-            <label className="block text-sm font-medium text-gray-600">
+            <label className="block text-sm font-medium text-gray-900 dark:text-white">
               Username
             </label>
             <input
@@ -73,13 +76,13 @@ const UserForm: React.FC<UserFormProps> = ({
               value={modalData.username}
               onChange={handleInputChange}
               required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-md focus:ring-primary-500 focus:border-primary-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
             />
           </div>
 
           {/* Email */}
           <div>
-            <label className="block text-sm font-medium text-gray-600">
+            <label className="block text-sm font-medium text-gray-900 dark:text-white">
               Email
             </label>
             <input
@@ -88,13 +91,13 @@ const UserForm: React.FC<UserFormProps> = ({
               value={modalData.email}
               onChange={handleInputChange}
               required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-md focus:ring-primary-500 focus:border-primary-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
             />
           </div>
 
           {/* First Name */}
           <div>
-            <label className="block text-sm font-medium text-gray-600">
+            <label className="block text-sm font-medium text-gray-900 dark:text-white">
               First Name
             </label>
             <input
@@ -103,13 +106,13 @@ const UserForm: React.FC<UserFormProps> = ({
               value={modalData.first_name}
               onChange={handleInputChange}
               required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-md focus:ring-primary-500 focus:border-primary-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
             />
           </div>
 
           {/* Last Name */}
           <div>
-            <label className="block text-sm font-medium text-gray-600">
+            <label className="block text-sm font-medium text-gray-900 dark:text-white">
               Last Name
             </label>
             <input
@@ -118,7 +121,7 @@ const UserForm: React.FC<UserFormProps> = ({
               value={modalData.last_name}
               onChange={handleInputChange}
               required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-md focus:ring-primary-500 focus:border-primary-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
             />
           </div>
 
@@ -126,7 +129,7 @@ const UserForm: React.FC<UserFormProps> = ({
           {!isEditMode && (
             <>
               <div>
-                <label className="block text-sm font-medium text-gray-600">
+                <label className="block text-sm font-medium text-gray-900 dark:text-white">
                   Password
                 </label>
                 <input
@@ -135,12 +138,12 @@ const UserForm: React.FC<UserFormProps> = ({
                   value={modalData.password}
                   onChange={handleInputChange}
                   required
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-md focus:ring-primary-500 focus:border-primary-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-600">
+                <label className="block text-sm font-medium text-gray-900 dark:text-white">
                   Confirm Password
                 </label>
                 <input
@@ -149,7 +152,7 @@ const UserForm: React.FC<UserFormProps> = ({
                   value={modalData.confirmPassword}
                   onChange={handleInputChange}
                   required
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-md focus:ring-primary-500 focus:border-primary-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                 />
               </div>
             </>
@@ -157,7 +160,7 @@ const UserForm: React.FC<UserFormProps> = ({
 
           {/* Role */}
           <div>
-            <label className="block text-sm font-medium text-gray-600">
+            <label className="block text-sm font-medium text-gray-900 dark:text-white">
               Role
             </label>
             <select
@@ -165,7 +168,7 @@ const UserForm: React.FC<UserFormProps> = ({
               value={modalData.role}
               onChange={handleInputChange}
               required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-md focus:ring-primary-500 focus:border-primary-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
             >
               <option value={0}>Select a role</option>
               {roles.map((role) => (
@@ -179,7 +182,7 @@ const UserForm: React.FC<UserFormProps> = ({
           {/* Permissions */}
           {isEditMode && (
             <div>
-              <label className="block text-sm font-medium text-gray-600">
+              <label className="block text-sm font-medium text-gray-900 dark:text-white">
                 Permissions
               </label>
               <div className="mt-2 flex flex-wrap gap-2">
@@ -201,23 +204,23 @@ const UserForm: React.FC<UserFormProps> = ({
               </div>
             </div>
           )}
+          {/* Action Buttons */}
+          <div className="mt-1 flex justify-end items-center p-1 border-t border-gray-200 rounded-b dark:border-gray-700">
+            
+            <button
+              onClick={handleSave}
+              className="px-2 py-1 bg-indigo-700 text-white rounded-md hover:bg-indigo-700 focus:outline-none"
+            >
+              {isEditMode ? "Save" : "Add"}
+            </button>
+            <button
+              onClick={onClose}
+              className="px-2 py-1 bg-red-600 ml-2 text-white rounded-md hover:bg-red-900 focus:outline-none"
+            >
+              Cancel
+            </button>
+          </div>
         </form>
-
-        {/* Action Buttons */}
-        <div className="mt-6 flex justify-end space-x-4">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 focus:outline-none"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleSave}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none"
-          >
-            {isEditMode ? "Save" : "Add"}
-          </button>
-        </div>
       </div>
     </div>
   );

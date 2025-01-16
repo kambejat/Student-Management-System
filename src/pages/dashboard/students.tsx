@@ -1,5 +1,8 @@
 import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import axios from "axios";
+import { AddIcon, DeleteIcon, ExportIcon, Pen } from "../../ui/icon/icons";
+import AddStudent from "../../ui/component/student/AddStudent";
+import Modal from "../../ui/component/Modal";
 
 interface Student {
   student_id: number;
@@ -22,13 +25,11 @@ interface Class {
   id: number;
   name: string;
 }
-
 const StudentManagement: React.FC = () => {
   const [students, setStudents] = useState<Student[]>([]);
   const [users, setUsers] = useState<User[]>([]);
-  const [classes, setClasses] = useState<Class[]>([]); // State to store classes
-  const [formData, setFormData] = useState<Student>({
-    student_id: 0,
+  const [classes, setClasses] = useState<Class[]>([]);
+  const [formData, setFormData] = useState<Omit<Student, "student_id">>({
     user_id: "",
     first_name: "",
     last_name: "",
@@ -37,12 +38,14 @@ const StudentManagement: React.FC = () => {
     grade_level: "",
     class_id: 0,
   });
+  const [searchTerm, setSearchTerm] = useState("");
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false); // State to control modal visibility
 
   useEffect(() => {
     fetchStudents();
     fetchUsers();
-    fetchClasses(); // Fetch classes
+    fetchClasses();
   }, []);
 
   const fetchStudents = async () => {
@@ -65,7 +68,7 @@ const StudentManagement: React.FC = () => {
 
   const fetchClasses = async () => {
     try {
-      const response = await axios.get("/api/classes"); // Assuming classes API is available at /classes
+      const response = await axios.get("/api/classes");
       setClasses(response.data);
     } catch (error) {
       console.error("Error fetching classes:", error);
@@ -96,12 +99,13 @@ const StudentManagement: React.FC = () => {
     e.preventDefault();
     try {
       if (isEditing) {
-        await axios.put(`/api/students/${formData.student_id}`, formData);
+        await axios.put(`/api/students/${formData.user_id}`, formData);
       } else {
         await axios.post("/api/students", formData);
       }
       fetchStudents();
       resetForm();
+      toggleModal(); // Close the modal after submission
     } catch (error) {
       console.error("Error saving student:", error);
     }
@@ -110,6 +114,7 @@ const StudentManagement: React.FC = () => {
   const handleEdit = (student: Student) => {
     setFormData(student);
     setIsEditing(true);
+    setIsOpen(true); // Open the modal when editing
   };
 
   const handleDelete = async (id: number) => {
@@ -125,7 +130,6 @@ const StudentManagement: React.FC = () => {
 
   const resetForm = () => {
     setFormData({
-      student_id: 0,
       user_id: "",
       first_name: "",
       last_name: "",
@@ -137,182 +141,142 @@ const StudentManagement: React.FC = () => {
     setIsEditing(false);
   };
 
+  const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value.toLowerCase());
+  };
+
+  const toggleModal = () => {
+    setIsOpen(!isOpen); // Toggle the modal visibility
+  };
+
+  const filteredStudents = students.filter((student) =>
+    `${student.first_name} ${student.last_name}`
+      .toLowerCase()
+      .includes(searchTerm)
+  );
+
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Student Management</h1>
-
-      {/* Form */}
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
-      >
-        <div className="grid grid-cols-2 gap-4">
-          <div className="flex flex-col">
-            <label htmlFor="user_id" className="mb-2 font-semibold">Select User</label>
-            <input
-              list="users"
-              name="user_id"
-              value={formData.user_id}
-              onChange={handleInputChange}
-              className="border rounded p-2"
-              required
-              placeholder="Select User"
-            />
-            <datalist id="users">
-              {users.map((user) => (
-                <option key={user.user_id} value={user.user_id}>
-                  {user.first_name} {user.last_name}
-                </option>
-              ))}
-            </datalist>
-          </div>
-
-          <div className="flex flex-col">
-            <label htmlFor="first_name" className="mb-2 font-semibold">First Name</label>
-            <input
-              type="text"
-              name="first_name"
-              value={formData.first_name}
-              onChange={handleInputChange}
-              placeholder="First Name"
-              className="border rounded p-2"
-              required
-              readOnly
-            />
-          </div>
-
-          <div className="flex flex-col">
-            <label htmlFor="last_name" className="mb-2 font-semibold">Last Name</label>
-            <input
-              type="text"
-              name="last_name"
-              value={formData.last_name}
-              onChange={handleInputChange}
-              placeholder="Last Name"
-              className="border rounded p-2"
-              required
-              readOnly
-            />
-          </div>
-
-          <div className="flex flex-col">
-            <label htmlFor="date_of_birth" className="mb-2 font-semibold">Date of Birth</label>
-            <input
-              type="date"
-              name="date_of_birth"
-              value={formData.date_of_birth}
-              onChange={handleInputChange}
-              className="border rounded p-2"
-              required
-            />
-          </div>
-
-          <div className="flex flex-col">
-            <label htmlFor="enrollment_year" className="mb-2 font-semibold">Enrollment Year</label>
-            <input
-              type="date"
-              name="enrollment_year"
-              value={formData.enrollment_year}
-              onChange={handleInputChange}
-              className="border rounded p-2"
-              required
-            />
-          </div>
-
-          <div className="flex flex-col">
-            <label htmlFor="grade_level" className="mb-2 font-semibold">Grade Level</label>
-            <select
-              name="grade_level"
-              value={formData.grade_level}
-              onChange={handleInputChange}
-              className="border rounded p-2"
-              required
-            >
-              <option value="">Select Grade</option>
-              <option value="F1">F1</option>
-              <option value="F2">F2</option>
-              <option value="F3">F3</option>
-              <option value="F4">F4</option>
-            </select>
-          </div>
-
-          <div className="flex flex-col">
-            <label htmlFor="class_id" className="mb-2 font-semibold">Class</label>
-            <select
-              name="class_id"
-              value={formData.class_id}
-              onChange={handleInputChange}
-              className="border rounded p-2"
-              required
-            >
-              <option value="">Select Class</option>
-              {classes.map((classItem) => (
-                <option key={classItem.id} value={classItem.id}>
-                  {classItem.name}
-                </option>
-              ))}
-            </select>
+    <div className="flex flex-col p-2">
+      <div className="sm:flex">
+        <div className="items-center hidden mb-3 sm:flex sm:divide-x sm:divide-gray-100 sm:mb-0 dark:divide-gray-700">
+          <form className="lg:pr-3" action="#" method="GET">
+            <label className="sr-only">Search</label>
+            <div className="relative mt-1 lg:w-64 xl:w-96">
+              <input
+                type="text"
+                name="search"
+                id="users-search"
+                value={searchTerm}
+                onChange={handleSearch}
+                className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-md focus:ring-primary-500 focus:border-primary-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                placeholder="Search for students..."
+              />
+            </div>
+          </form>
+        </div>
+        <div className="flex items-center ml-auto space-x-2 sm:space-x-3">
+          <button
+            onClick={() => {
+              resetForm();
+              toggleModal(); // Open the modal for adding a new student
+            }}
+            className="inline-flex items-center justify-center w-1/2 px-2 py-1 text-sm font-medium text-center text-white rounded-md bg-[#3b22e0] hover:bg-[#311fb7] focus:ring-4 focus:ring-[#98a5ff] sm:w-auto dark:bg-primary-600 dark:hover:bg-[#3b22e0] dark:focus:ring-[#311fb7]"
+          >
+            <AddIcon className="mr-2 -ml-1 h-5 w-5" />
+            Add Student
+          </button>
+          <a className="inline-flex items-center justify-center w-1/2 px-2 py-1 text-sm font-medium text-center text-gray-900 bg-white border border-gray-300 rounded-md hover:bg-gray-100 focus:ring-4 focus:ring-primary-300 sm:w-auto dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-700">
+            <ExportIcon />
+            Export
+          </a>
+        </div>
+      </div>
+      <div className="flex flex-col pt-2">
+        <div className="overflow-x-auto">
+          <div className="inline-block min-w-full align-middle">
+            <div className="overflow-hidden shadow">
+              <table className="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-600">
+                <thead className="bg-gray-100 dark:bg-gray-700">
+                  <tr>
+                    <th className="p-2 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                      ID
+                    </th>
+                    <th className="p-2 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                      First Name
+                    </th>
+                    <th className="p-2 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                      Last Name
+                    </th>
+                    <th className="p-2 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                      Grade
+                    </th>
+                    <th className="p-2 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                      Class
+                    </th>
+                    <th className="p-2 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredStudents.map((student) => (
+                    <tr
+                      key={student.student_id}
+                      className="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700"
+                    >
+                      <td className="p-2 text-base font-normal text-gray-500 dark:text-gray-400">
+                        {student.student_id}
+                      </td>
+                      <td className="p-2 text-base font-normal text-gray-500 dark:text-gray-400">
+                        {student.first_name}
+                      </td>
+                      <td className="p-2 text-base font-normal text-gray-500 dark:text-gray-400">
+                        {student.last_name}
+                      </td>
+                      <td className="p-2 text-base font-normal text-gray-500 dark:text-gray-400">
+                        {student.grade_level}
+                      </td>
+                      <td className="p-2 text-base font-normal text-gray-500 dark:text-gray-400">
+                        {classes.find((cls) => cls.id === student.class_id)
+                          ?.name || "N/A"}
+                      </td>
+                      <td className="p-2 text-base font-normal text-gray-500 dark:text-gray-400">
+                        <button
+                          onClick={() => handleEdit(student)}
+                          className="inline-flex mr-1 items-center px-2 py-1 text-sm font-medium text-center text-white rounded-md bg-[#3b22e0] hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-[#3b22e0] dark:focus:ring-primary-800"
+                        >
+                          <Pen /> Edit
+                        </button>
+                        <button
+                          onClick={() => handleDelete(student.student_id)}
+                          className="inline-flex items-center px-2 py-1 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:focus:ring-red-900"
+                        >
+                          <DeleteIcon /> Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
-
-        <div className="mt-4 flex justify-end">
-          <button
-            type="button"
-            onClick={resetForm}
-            className="mr-2 px-4 py-2 bg-gray-500 text-white rounded"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="px-4 py-2 bg-blue-500 text-white rounded"
-          >
-            {isEditing ? "Update" : "Add"} Student
-          </button>
-        </div>
-      </form>
-
-      {/* Table */}
-      <table className="table-auto w-full bg-white shadow-md rounded">
-        <thead>
-          <tr className="bg-gray-200 text-left">
-            <th className="px-4 py-2">ID</th>
-            <th className="px-4 py-2">First Name</th>
-            <th className="px-4 py-2">Last Name</th>
-            <th className="px-4 py-2">Grade</th>
-            <th className="px-4 py-2">Class</th>
-            <th className="px-4 py-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {students.map((student) => (
-            <tr key={student.student_id} className="border-t">
-              <td className="px-4 py-2">{student.student_id}</td>
-              <td className="px-4 py-2">{student.first_name}</td>
-              <td className="px-4 py-2">{student.last_name}</td>
-              <td className="px-4 py-2">{student.grade_level}</td>
-              <td className="px-4 py-2">
-                {classes.find((classItem) => classItem.id === student.class_id)
-                  ?.name || "N/A"}
-              </td>
-              <td className="px-4 py-2">
-                <button
-                  onClick={() => handleEdit(student)}
-                  className="mr-2 px-2 py-1 bg-green-500 text-white rounded"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(student.student_id)}
-                  className="px-2 py-1 bg-red-500 text-white rounded"
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      </div>
+      <Modal
+        Content={
+          <AddStudent
+            isEditing={isEditing}
+            users={users}
+            handleInputChange={handleInputChange}
+            handleSubmit={handleSubmit}
+            formData={formData}
+            resetForm={resetForm}
+            classes={classes}
+          />
+        }
+        isOpen={isOpen}
+        toggleModal={toggleModal}
+      />
     </div>
   );
 };

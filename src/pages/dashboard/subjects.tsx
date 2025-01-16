@@ -1,16 +1,15 @@
 import React, { useState, useEffect, FormEvent } from "react";
 import axios from "axios";
-
+import Modal from "../../ui/component/Modal";
+import AddForm from "../../ui/component/subjects/AddForm";
+import { AddIcon } from "../../ui/icon/icons";
+import AddSubjectForm from "../../ui/component/subjects/AddSubjectForm";
+import { Teacher } from "../../types/Teacher";
 interface Subject {
   subject_id: number;
   name: string;
   grade_level: string;
   teacher?: string;
-}
-
-interface Teacher {
-  teacher_id: number;
-  name: string;
 }
 
 const SubjectsPage: React.FC = () => {
@@ -19,6 +18,19 @@ const SubjectsPage: React.FC = () => {
   const [selectedSubject, setSelectedSubject] = useState<number | null>(null);
   const [selectedTeacher, setSelectedTeacher] = useState<string>("");
   const [error, setError] = useState<string>("");
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isAddSubjectModalOpen, setIsAddSubjectModalOpen] =
+    useState<boolean>(false); // For Add Subject Modal
+
+  // Update selected subject and teacher
+  const filteredSubject = subjects.filter((subject) =>
+    `${subject.name}`.toLowerCase().includes(searchTerm)
+  );
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
 
   // Fetch subjects from the API
   useEffect(() => {
@@ -56,10 +68,14 @@ const SubjectsPage: React.FC = () => {
     }
 
     try {
-      await axios.put(`/api/subjects/${selectedSubject}`, { teacher: selectedTeacher });
+      await axios.put(`/api/subjects/${selectedSubject}`, {
+        teacher: selectedTeacher,
+      });
       setSubjects((prev) =>
         prev.map((subject) =>
-          subject.subject_id === selectedSubject ? { ...subject, teacher: selectedTeacher } : subject
+          subject.subject_id === selectedSubject
+            ? { ...subject, teacher: selectedTeacher }
+            : subject
         )
       );
       setSelectedTeacher("");
@@ -70,83 +86,137 @@ const SubjectsPage: React.FC = () => {
     }
   };
 
+  const handleClose = () => {
+    setIsOpen(false);
+  };
+
+  const handleCloseAddSubjectModal = () => {
+    setIsAddSubjectModalOpen(false);
+  };
+
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Subjects</h1>
-
-      {error && <div className="text-red-600 mb-4">{error}</div>}
-
-      <table className="table-auto w-full border border-gray-200 shadow-md mb-6">
-        <thead className="bg-gray-100">
-          <tr>
-            <th className="border px-4 py-2">ID</th>
-            <th className="border px-4 py-2">Name</th>
-            <th className="border px-4 py-2">Grade Level</th>
-            <th className="border px-4 py-2">Teacher</th>
-          </tr>
-        </thead>
-        <tbody>
-          {subjects.map((subject) => (
-            <tr key={subject.subject_id} className="text-center">
-              <td className="border px-4 py-2">{subject.subject_id}</td>
-              <td className="border px-4 py-2">{subject.name}</td>
-              <td className="border px-4 py-2">{subject.grade_level}</td>
-              <td className="border px-4 py-2">{subject.teacher || "N/A"}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <form onSubmit={handleAddTeacher} className="bg-gray-100 p-4 rounded shadow-md">
-        <h2 className="text-xl font-semibold mb-4">Add Teacher to Subject</h2>
-
-        <div className="mb-4">
-          <label htmlFor="subject" className="block mb-2 font-medium">
-            Select Subject
-          </label>
-          <select
-            id="subject"
-            value={selectedSubject || ""}
-            onChange={(e) => setSelectedSubject(Number(e.target.value) || null)}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+    <div className="flex flex-col p-2">
+      <div className="sm:flex">
+        <div className="items-center hidden mb-3 sm:flex sm:divide-x sm:divide-gray-100 sm:mb-0 dark:divide-gray-700">
+          <form action="GET">
+            <label className="sr-only">Search</label>
+            <div className="relative mt-1 lg:w-64 xl:w-96">
+              <input
+                type="text"
+                name="subject"
+                id="users-search"
+                value={searchTerm}
+                onChange={handleSearch}
+                className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-md focus:ring-primary-500 focus:border-primary-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                placeholder="Search for subject name"
+              />
+            </div>
+          </form>
+        </div>
+        <div className="flex items-center ml-auto space-x-2 sm:space-x-3">
+          <button
+            onClick={() => setIsOpen(true)}
+            type="button"
+            data-modal-target="add-user-modal"
+            data-modal-toggle="add-user-modal"
+            className="inline-flex items-center justify-center w-1/2 px-2 py-1 text-sm font-medium text-center text-white rounded-md bg-[#3b22e0] hover:bg-[#311fb7] focus:ring-4 focus:ring-[#98a5ff] sm:w-auto dark:bg-primary-600 dark:hover:bg-[#3b22e0] dark:focus:ring-[#311fb7]"
           >
-            <option value="">-- Select a Subject --</option>
-            {subjects.map((subject) => (
-              <option key={subject.subject_id} value={subject.subject_id}>
-                {subject.name} ({subject.grade_level})
-              </option>
-            ))}
-          </select>
+            <AddIcon className="mr-2 -ml-1 h-5 w-5" />
+            Add Teacher to Subject
+          </button>
+          <button
+            onClick={() => setIsAddSubjectModalOpen(true)}
+            type="button"
+            data-modal-target="add-user-modal"
+            data-modal-toggle="add-user-modal"
+            className="inline-flex items-center ml-2 justify-center w-1/2 px-2 py-1 text-sm font-medium text-center text-white rounded-md bg-[#3b22e0] hover:bg-[#311fb7] focus:ring-4 focus:ring-[#98a5ff] sm:w-auto dark:bg-primary-600 dark:hover:bg-[#3b22e0] dark:focus:ring-[#311fb7]"
+          >
+            <AddIcon className="mr-2 -ml-1 h-5 w-5" />
+            New Subject
+          </button>
         </div>
+      </div>
+      <div className="flex flex-col pt-2">
+        <div className="overflow-x-auto">
+          <div className="inline-block min-w-full align-middle">
+            <div className="overflow-hidden shadow">
+              {error && <div className="text-red-600 mb-4">{error}</div>}
 
-        <div className="mb-4">
-          <label htmlFor="teacher" className="block mb-2 font-medium">
-            Select Teacher
-          </label>
-          <input
-            list="teachers"
-            id="teacher"
-            value={selectedTeacher}
-            onChange={(e) => setSelectedTeacher(e.target.value)}
-            className="w-full border border-gray-300 rounded px-3 py-2"
-            placeholder="Choose a teacher"
-          />
-          <datalist id="teachers">
-            {teachers.map((teacher) => (
-              <option key={teacher.teacher_id} value={teacher.name}>
-                {teacher.name}
-              </option>
-            ))}
-          </datalist>
+              <table className="table-auto w-full border border-gray-200 shadow-md mb-6">
+                <thead className="bg-gray-100 dark:bg-gray-700">
+                  <tr>
+                    <th className="p-2 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                      ID
+                    </th>
+                    <th className="p-2 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                      Name
+                    </th>
+                    <th className="p-2 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                      Grade Level
+                    </th>
+                    <th className="p-2 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                      Teacher
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredSubject.map((subject) => (
+                    <tr
+                      key={subject.subject_id}
+                      className="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700"
+                    >
+                      <td className="p-2 text-base font-normal text-gray-500 dark:text-gray-400">
+                        {subject.subject_id}
+                      </td>
+                      <td className="p-2 text-base font-normal text-gray-500 dark:text-gray-400">
+                        {subject.name}
+                      </td>
+                      <td className="p-2 text-base font-normal text-gray-500 dark:text-gray-400">
+                        {subject.grade_level}
+                      </td>
+                      <td className="p-2 text-base font-normal text-gray-500 dark:text-gray-400">
+                        {subject.teacher || "N/A"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
-
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-        >
-          Add Teacher
-        </button>
-      </form>
+      </div>
+      {isOpen && (
+        <Modal
+          isOpen={isOpen}
+          Content={
+            <AddForm
+              subjects={subjects}
+              teachers={teachers}
+              selectedSubject={selectedSubject}
+              selectedTeacher={selectedTeacher}
+              setSelectedSubject={setSelectedSubject}
+              setSelectedTeacher={setSelectedTeacher}
+              handleAddTeacher={handleAddTeacher}
+              error={error}
+            />
+          }
+          toggleModal={handleClose}
+        />
+      )}
+      {isAddSubjectModalOpen && (
+        <Modal
+          isOpen={isAddSubjectModalOpen}
+          toggleModal={handleCloseAddSubjectModal}
+          Content={
+            <AddSubjectForm
+              setError={setError}
+              setSubjects={setSubjects}
+              toggleModal={handleCloseAddSubjectModal}
+              teachers={teachers}
+            />
+          }
+        />
+      )}
     </div>
   );
 };
