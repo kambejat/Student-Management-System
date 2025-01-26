@@ -1,24 +1,15 @@
-// TeacherModal.tsx
+import React, { useState, FormEvent } from "react";
+import { User, Class, FormData } from "../../../types/types";
 
-import React, { useState, useEffect, FormEvent } from "react";
-import { Class, FormData, User } from "../../../types/types";
-
-interface TeacherModalProps {
-  isEditMode: boolean;
+interface AddFormProps {
   users: User[];
   classes: Class[];
   onSubmit: (formData: FormData) => void;
   onClose: () => void;
-  formData?: FormData; // This will be used when editing a teacher
 }
 
-const TeacherModal: React.FC<TeacherModalProps> = ({
-  isEditMode,
-  users,
-  classes,
-  onSubmit,
-  onClose,
-  formData = {
+const AddForm: React.FC<AddFormProps> = ({ users, classes, onSubmit, onClose }) => {
+  const [formState, setFormState] = useState<FormData>({
     user_id: "",
     class_id: "",
     first_name: "",
@@ -26,38 +17,48 @@ const TeacherModal: React.FC<TeacherModalProps> = ({
     gender: "",
     phone_number: "",
     date_of_birth: "",
-  },
-}) => {
-  const [formState, setFormState] = useState<FormData>(formData);
-
-  useEffect(() => {
-    if (isEditMode && formData) {
-      setFormState(formData);
-    }
-  }, [isEditMode, formData]);
+  });
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormState((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+
+    if (name === "user_id") {
+      // Auto-fill first_name and last_name based on selected user_id
+      const selectedUser = users.find((user: any) => String(user.user_id) === value);
+
+      setFormState((prev: any) => ({
+        ...prev,
+        user_id: value,
+        first_name: selectedUser?.first_name || "",
+        last_name: selectedUser?.last_name || "",
+      }));
+    } else {
+      setFormState((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    onSubmit(formState);
+
+    // Create the final object to send to the database
+    const formattedData = {
+      ...formState,
+    };
+
+    onSubmit(formattedData);
+    onClose();
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white p-8 rounded shadow-lg">
-        <h2 className="text-lg font-bold mb-4">
-          {isEditMode ? "Edit Teacher" : "Add Teacher"}
-        </h2>
-        <form onSubmit={handleSubmit}>
+    <>
+    <div className="bg-white h-64 p-8 rounded shadow-lg">
+        <h2 className="text-lg font-bold mb-4">Add Teacher</h2>
+        <form onSubmit={handleSubmit} className="flex">
           <div className="mb-4">
             <label className="block text-gray-700">User</label>
             <input
@@ -70,7 +71,9 @@ const TeacherModal: React.FC<TeacherModalProps> = ({
             />
             <datalist id="users">
               {users.map((user) => (
-                <option key={user.user_id} value={`${user.first_name} ${user.last_name}`} />
+                <option key={user.user_id} value={user.user_id}>
+                  {user.first_name} {user.last_name}
+                </option>
               ))}
             </datalist>
           </div>
@@ -81,15 +84,37 @@ const TeacherModal: React.FC<TeacherModalProps> = ({
               value={formState.class_id}
               onChange={handleInputChange}
               className="w-full px-3 py-2 border rounded"
-              
             >
               <option value="">Select Class</option>
               {classes.map((cls) => (
-                <option key={cls.class_id} value={cls.class_id}>
+                <option key={cls.id} value={cls.id}>
                   {cls.name}
                 </option>
               ))}
             </select>
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700">First Name</label>
+            <input
+              type="text"
+              name="first_name"
+              value={formState.first_name}
+              onChange={handleInputChange}
+              className="w-full px-3 py-2 border rounded"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700">Last Name</label>
+            <input
+              type="text"
+              name="last_name"
+              value={formState.last_name}
+              onChange={handleInputChange}
+              className="w-full px-3 py-2 border rounded"
+              required
+              readOnly
+            />
           </div>
           <div className="mb-4">
             <label className="block text-gray-700">Gender</label>
@@ -128,7 +153,6 @@ const TeacherModal: React.FC<TeacherModalProps> = ({
               required
             />
           </div>
-
           <div className="flex justify-end">
             <button
               type="button"
@@ -146,8 +170,8 @@ const TeacherModal: React.FC<TeacherModalProps> = ({
           </div>
         </form>
       </div>
-    </div>
+    </>
   );
 };
 
-export default TeacherModal;
+export default AddForm;

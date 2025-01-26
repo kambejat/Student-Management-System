@@ -1,40 +1,20 @@
-// TeacherModal.tsx
-
 import React, { useState, useEffect, FormEvent } from "react";
-import { Class, FormData, User } from "../../../types/types";
+import { User, Class, FormData } from "../../../types/types";
 
-interface TeacherModalProps {
-  isEditMode: boolean;
+interface EditFormProps {
   users: User[];
   classes: Class[];
   onSubmit: (formData: FormData) => void;
   onClose: () => void;
-  formData?: FormData; // This will be used when editing a teacher
+  formData: FormData; // Pre-filled form data for editing
 }
 
-const TeacherModal: React.FC<TeacherModalProps> = ({
-  isEditMode,
-  users,
-  classes,
-  onSubmit,
-  onClose,
-  formData = {
-    user_id: "",
-    class_id: "",
-    first_name: "",
-    last_name: "",
-    gender: "",
-    phone_number: "",
-    date_of_birth: "",
-  },
-}) => {
+const EditForm: React.FC<EditFormProps> = ({ users, classes, onSubmit, onClose, formData }) => {
   const [formState, setFormState] = useState<FormData>(formData);
 
   useEffect(() => {
-    if (isEditMode && formData) {
-      setFormState(formData);
-    }
-  }, [isEditMode, formData]);
+    setFormState(formData);
+  }, [formData]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -52,12 +32,11 @@ const TeacherModal: React.FC<TeacherModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+    <div className="">
       <div className="bg-white p-8 rounded shadow-lg">
-        <h2 className="text-lg font-bold mb-4">
-          {isEditMode ? "Edit Teacher" : "Add Teacher"}
-        </h2>
+        <h2 className="text-lg font-bold mb-4">Edit Teacher</h2>
         <form onSubmit={handleSubmit}>
+          {/* User Selection */}
           <div className="mb-4">
             <label className="block text-gray-700">User</label>
             <input
@@ -70,10 +49,14 @@ const TeacherModal: React.FC<TeacherModalProps> = ({
             />
             <datalist id="users">
               {users.map((user) => (
-                <option key={user.user_id} value={`${user.first_name} ${user.last_name}`} />
+                <option key={user.user_id} value={user.user_id}>
+                  {user.first_name} {user.last_name}
+                </option>
               ))}
             </datalist>
           </div>
+
+          {/* Class Selection */}
           <div className="mb-4">
             <label className="block text-gray-700">Class (Optional)</label>
             <select
@@ -81,16 +64,17 @@ const TeacherModal: React.FC<TeacherModalProps> = ({
               value={formState.class_id}
               onChange={handleInputChange}
               className="w-full px-3 py-2 border rounded"
-              
             >
               <option value="">Select Class</option>
               {classes.map((cls) => (
-                <option key={cls.class_id} value={cls.class_id}>
+                <option key={cls.id} value={cls.id}>
                   {cls.name}
                 </option>
               ))}
             </select>
           </div>
+
+          {/* Gender */}
           <div className="mb-4">
             <label className="block text-gray-700">Gender</label>
             <select
@@ -106,6 +90,8 @@ const TeacherModal: React.FC<TeacherModalProps> = ({
               <option value="Other">Other</option>
             </select>
           </div>
+
+          {/* Date of Birth */}
           <div className="mb-4">
             <label className="block text-gray-700">Date of Birth</label>
             <input
@@ -117,6 +103,8 @@ const TeacherModal: React.FC<TeacherModalProps> = ({
               required
             />
           </div>
+
+          {/* Phone Number */}
           <div className="mb-4">
             <label className="block text-gray-700">Phone Number</label>
             <input
@@ -129,6 +117,9 @@ const TeacherModal: React.FC<TeacherModalProps> = ({
             />
           </div>
 
+         
+
+          {/* Buttons */}
           <div className="flex justify-end">
             <button
               type="button"
@@ -150,4 +141,4 @@ const TeacherModal: React.FC<TeacherModalProps> = ({
   );
 };
 
-export default TeacherModal;
+export default EditForm;

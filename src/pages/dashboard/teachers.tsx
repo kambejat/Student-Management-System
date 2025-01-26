@@ -3,14 +3,17 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Teacher, User, Class, FormData } from "../../types/types";
-import TeacherModal from "../../ui/component/teachers/addTeacher";
+import Modal from "../../ui/component/Modal";
 import { AddIcon, ExportIcon, Pen } from "../../ui/icon/icons";
+import AddForm from "../../ui/component/teachers/AddForm";
+import EditForm from "../../ui/component/teachers/EditForm";
 
 const TeacherManagementPage: React.FC = () => {
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [classes, setClasses] = useState<Class[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isFormOpen, setIsFormOpen] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     user_id: "",
     class_id: "",
@@ -55,31 +58,31 @@ const TeacherManagementPage: React.FC = () => {
 
   const handleSubmit = async (formData: FormData) => {
     try {
+      // Log form data before submission to check values
+      console.log(formData);
+
+      // Fix the payload to properly map class_id and user_id
+      const payload = {
+        user_id: formData.user_id,
+        class_id: formData.class_id, // Ensure class_id is coming from formData
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        gender: formData.gender,
+        phone_number: formData.phone_number,
+        date_of_birth: formData.date_of_birth,
+      };
+
       if (isEditMode && selectedTeacherId) {
-        await axios.put(`/api/teachers/${selectedTeacherId}`, formData);
+        await axios.put(`/api/teachers/${selectedTeacherId}`, payload);
       } else {
-        await axios.post("/api/teachers", formData);
+        await axios.post("/api/teachers", payload);
       }
+
       fetchTeachers();
       closeModal();
     } catch (error) {
       console.error("Error saving teacher:", error);
     }
-  };
-
-  const openEditModal = (teacher: Teacher) => {
-    setIsEditMode(true);
-    setFormData({
-      user_id: teacher.user_id,
-      class_id: teacher.class_id,
-      first_name: teacher.first_name,
-      last_name: teacher.last_name,
-      gender: teacher.gender,
-      phone_number: teacher.phone_number,
-      date_of_birth: teacher.date_of_birth,
-    });
-    setSelectedTeacherId(teacher.teacher_id);
-    setIsModalOpen(true);
   };
 
   const handleDelete = async (teacherId: number) => {
@@ -91,23 +94,23 @@ const TeacherManagementPage: React.FC = () => {
     }
   };
 
-  const openAddModal = () => {
-    setIsEditMode(false);
-    setFormData({
-      user_id: "",
-      class_id: "",
-      first_name: "",
-      last_name: "",
-      gender: "",
-      phone_number: "",
-      date_of_birth: "",
-    });
-    setSelectedTeacherId(null);
-    setIsModalOpen(true);
-  };
-
   const closeModal = () => {
     setIsModalOpen(false);
+  };
+
+  const openEditForm = (teacher: Teacher) => {
+    setFormData({
+      user_id: teacher.user_id,
+      class_id: teacher.class_id,
+      first_name: teacher.first_name,
+      last_name: teacher.last_name,
+      gender: teacher.gender,
+      phone_number: teacher.phone_number,
+      date_of_birth: teacher.date_of_birth,
+    });
+    setSelectedTeacherId(teacher.teacher_id);
+    setIsEditMode(true);
+    setIsModalOpen(true);
   };
 
   useEffect(() => {
@@ -147,14 +150,14 @@ const TeacherManagementPage: React.FC = () => {
         </div>
         <div className="flex items-center ml-auto space-x-2 sm:space-x-3">
           <button
-            onClick={() => openAddModal()}
+            onClick={() => setIsFormOpen(true)}
             type="button"
             data-modal-target="add-user-modal"
             data-modal-toggle="add-user-modal"
             className="inline-flex items-center justify-center w-1/2 px-2 py-1 text-sm font-medium text-center text-white rounded-md bg-[#3b22e0] hover:bg-[#311fb7] focus:ring-4 focus:ring-[#98a5ff] sm:w-auto dark:bg-primary-600 dark:hover:bg-[#3b22e0] dark:focus:ring-[#311fb7]"
           >
             <AddIcon className="mr-2 -ml-1 h-5 w-5" />
-            Add user
+            Add Teacher
           </button>
           <a
             // onClick={exportUsersToExcel}
@@ -209,7 +212,7 @@ const TeacherManagementPage: React.FC = () => {
                       </td>
                       <td className="p-2 text-base font-normal text-gray-500 dark:text-gray-400">
                         <button
-                          onClick={() => openEditModal(teacher)}
+                          onClick={() => openEditForm(teacher)}
                           className="inline-flex mr-1 items-center px-2 py-1 text-sm font-medium text-center text-white rounded-md bg-[#3b22e0] hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-[#3b22e0] dark:focus:ring-primary-800"
                         >
                           <Pen /> Edit
@@ -230,16 +233,32 @@ const TeacherManagementPage: React.FC = () => {
         </div>
       </div>
 
-      {isModalOpen && (
-        <TeacherModal
-          isEditMode={isEditMode}
-          users={users}
-          classes={classes}
-          formData={formData}
-          onSubmit={handleSubmit}
-          onClose={closeModal}
-        />
-      )}
+      <Modal
+        isOpen={isFormOpen}
+        toggleModal={() => setIsFormOpen(false)}
+        Content={
+          <AddForm
+            users={users}
+            classes={classes}
+            onSubmit={handleSubmit}
+            onClose={() => setIsFormOpen(false)}
+          />
+        }
+      />
+
+      <Modal
+        isOpen={isModalOpen}
+        toggleModal={closeModal}
+        Content={
+          <EditForm
+            users={users}
+            classes={classes}
+            onSubmit={handleSubmit}
+            onClose={closeModal}
+            formData={formData}
+          />
+        }
+      />
     </div>
   );
 };

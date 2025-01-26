@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import AuthContext from "../../context/AuthContext";
-import { AccountIcon, ParentIcon, StudentIcon, SubjectIcon, TeacherIcon } from "../icon/icons";
+import { AccountIcon, Classroom, ParentIcon, StudentIcon, SubjectIcon, TeacherIcon } from "../icon/icons";
 
 interface SidebarProps {
     activeTab: number;
@@ -63,6 +63,13 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <span className={`text-sm ${activeTab === 4 ? "dark:text-[#d11544]  text-[#d11544]" : "text-white"}`}>Teachers</span>
             </li>
             <li
+            className={`${activeTab === 8? activeTabClass : ""} flex items-center rounded-sm p-2 space-x-3 hover:bg-[#db3d3d] dark:hover:bg-[#178777] dark:hover:text-white`}
+            onClick={() => handleTabChange(8)}
+            >
+               <Classroom className={` ${activeTab === 8? activeIconTextClass : "text-white"}`}/>
+                <span className={`text-sm ${activeTab === 8 ? "dark:text-[#d11544]  text-[#d11544]" : "text-white"}`}>Classroom</span>
+            </li>
+            <li
             className={`${activeTab === 5? activeTabClass : ""} flex items-center rounded-sm p-2 space-x-3 hover:bg-[#db3d3d] dark:hover:bg-[#168677] dark:hover:text-white`}
             onClick={() => handleTabChange(5)}
             >
@@ -83,6 +90,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                <ParentIcon className={` ${activeTab === 7? activeIconTextClass : "text-white"}`}/>
                 <span className={`text-sm ${activeTab === 7 ? "dark:text-[#d11544]  text-[#d11544]" : "text-white"}`}>User Management</span>
             </li>
+            
          </ul>
          </div>
       </aside>

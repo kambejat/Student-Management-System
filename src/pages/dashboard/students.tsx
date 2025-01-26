@@ -75,12 +75,11 @@ const StudentManagement: React.FC = () => {
     }
   };
 
-  const handleInputChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-
+  
     if (name === "user_id") {
+      setFormData({ ...formData, user_id: value });
       const selectedUser = users.find((user) => user.user_id === value);
       if (selectedUser) {
         setFormData({
@@ -89,11 +88,19 @@ const StudentManagement: React.FC = () => {
           first_name: selectedUser.first_name,
           last_name: selectedUser.last_name,
         });
+      } else {
+        setFormData({
+          ...formData,
+          user_id: value,
+          first_name: "",
+          last_name: "",
+        });
       }
     } else {
       setFormData({ ...formData, [name]: value });
     }
   };
+  
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();

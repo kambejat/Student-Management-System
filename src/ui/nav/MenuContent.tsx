@@ -7,6 +7,7 @@ import AccountManagement from "../../pages/dashboard/accounts";
 import SubjectsPage from "../../pages/dashboard/subjects";
 import UserManagement from "../../pages/dashboard/usermanagement";
 import Breadcrumb from "../Breadcrumb";
+import Classroom from "../../pages/dashboard/classroom";
 
 interface MenuContentProps {
   activeTab: number;
@@ -16,30 +17,13 @@ const MenuContent: React.FC<MenuContentProps> = ({ activeTab }) => {
   // Map activeTab to breadcrumb navigation
   const breadcrumbMap: any = {
     1: [{ label: "Home" }],
-    2: [
-      { label: "Home", href: "/dashboard" },
-      { label: "Student Management" },
-    ],
-    3: [
-      { label: "Home", href: "/dashboard" },
-      { label: "Parent Management" },
-    ],
-    4: [
-      { label: "Home", href: "/dashboard" },
-      { label: "Teacher Management" },
-    ],
-    5: [
-      { label: "Home", href: "/dashboard" },
-      { label: "Account Management" },
-    ],
-    6: [
-      { label: "Home", href: "/dashboard" },
-      { label: "Subjects" },
-    ],
-    7: [
-      { label: "Home", href: "/dashboard" },
-      { label: "User Management" },
-    ],
+    2: [{ label: "Home", href: "/dashboard" }, { label: "Student Management" }],
+    3: [{ label: "Home", href: "/dashboard" }, { label: "Parent Management" }],
+    4: [{ label: "Home", href: "/dashboard" }, { label: "Teacher Management" }],
+    5: [{ label: "Home", href: "/dashboard" }, { label: "Account Management" }],
+    6: [{ label: "Home", href: "/dashboard" }, { label: "Subjects" }],
+    7: [{ label: "Home", href: "/dashboard" }, { label: "User Management" }],
+    8: [{ label: "Home", href: "/dashboard" }, { label: "Classroom" }],
   };
 
   const navigation = breadcrumbMap[activeTab] || [
@@ -62,14 +46,14 @@ const MenuContent: React.FC<MenuContentProps> = ({ activeTab }) => {
       return <SubjectsPage />;
     } else if (activeTab === 7) {
       return <UserManagement />;
+    } else if (activeTab === 8) {
+      return <Classroom />
     } else {
       return (
         <div className="bg-gray-100">
           <div className="h-screen flex flex-col justify-center items-center">
             <h1 className="text-8xl font-bold text-gray-800">404</h1>
-            <p className="text-4xl font-medium text-gray-800">
-              Page Not Found
-            </p>
+            <p className="text-4xl font-medium text-gray-800">Page Not Found</p>
             <a
               href="/dashboard/1/1"
               className="mt-4 text-xl text-blue-600 hover:underline"
@@ -82,11 +66,7 @@ const MenuContent: React.FC<MenuContentProps> = ({ activeTab }) => {
     }
   };
 
-  return (
-    <Breadcrumb navigation={navigation}>
-      {renderContent()}
-    </Breadcrumb>
-  );
+  return <Breadcrumb navigation={navigation}>{renderContent()}</Breadcrumb>;
 };
 
 export default MenuContent;
