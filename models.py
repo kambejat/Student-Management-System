@@ -119,9 +119,9 @@ class Classes(db.Model):
     __tablename__ = 'classes'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
-    subject_id = db.Column(db.Integer, db.ForeignKey('subjects.subject_id'), nullable=False)
-    teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.teacher_id'), nullable=False)
-    schedule_time = db.Column(db.Time, nullable=False)
+    subject_id = db.Column(db.Integer, db.ForeignKey('subjects.subject_id'), nullable=True)  # Optional
+    teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.teacher_id'), nullable=True)  # Optional
+    schedule_time = db.Column(db.Time, nullable=True)
 
     subject = db.relationship('Subject', backref='classes', lazy=True)
     teacher = db.relationship('Teacher', backref='classes', lazy=True, foreign_keys=[teacher_id])
@@ -131,11 +131,11 @@ class Teacher(db.Model):
     __tablename__ = 'teachers'
     teacher_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('Users.user_id'), nullable=False)
-    class_id = db.Column(db.Integer, db.ForeignKey('classes.id'), nullable=False)
+    class_id = db.Column(db.Integer, db.ForeignKey('classes.id'), nullable=True)
     first_name = db.Column(db.String(50), nullable=False)
     last_name = db.Column(db.String(50), nullable=False)
     gender = db.Column(db.Enum('Male', 'Female', 'Other'), nullable=False)
-    phone_number = db.Column(db.String(15), nullable=False, unique=True)
+    phone_number = db.Column(db.String(15), nullable=True, unique=False)
     date_of_birth = db.Column(db.Date, nullable=False)
 
     user = db.relationship('User', backref='teacher', lazy=True)

@@ -8,7 +8,7 @@ api = Api(subject_bp)
 
 subject_parser = reqparse.RequestParser()
 subject_parser.add_argument("name", type=str, required=True, help="Subject name is required")
-subject_parser.add_argument("grade_level", type=str, required=True, choices=['1', '2', '3', '4'], help="Grade level must be one of '1', '2', '3', '4'")
+subject_parser.add_argument("grade_level", type=str, required=True, choices=['F1', 'F2', 'F3', 'F4'], help="Grade level must be one of '1', '2', '3', '4'")
 
 subject_fields = {
     'subject_id': fields.Integer,

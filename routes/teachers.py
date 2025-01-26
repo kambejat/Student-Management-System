@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import Blueprint
 from flask_restful import reqparse, fields, marshal_with, Resource, Api
 from models import db, Teacher
@@ -7,14 +8,22 @@ api = Api(teacher_bp)
 
 teacher_parser = reqparse.RequestParser()
 teacher_parser.add_argument("user_id", type=int, required=True, help="User ID is required")
+teacher_parser.add_argument("class_id", type=int, required=False, help="Class ID (Optional)")
 teacher_parser.add_argument("first_name", type=str, required=True, help="First name is required")
 teacher_parser.add_argument("last_name", type=str, required=True, help="Last name is required")
+teacher_parser.add_argument("gender", type=str, required=True, help="Gender is required")
+teacher_parser.add_argument("phone_number", type=str, required=False)
+teacher_parser.add_argument("date_of_birth")
 
 teacher_fields = {
     'teacher_id': fields.Integer,
     'user_id': fields.Integer,
+    'class_id': fields.Integer,
     'first_name': fields.String,
     'last_name': fields.String,
+    'gender': fields.String,
+    'phone_number': fields.String,
+    'date_of_birth': fields.String
 }
 
 class TeacherResource(Resource):
@@ -60,10 +69,18 @@ class TeacherListResource(Resource):
     def post(self):
         """Create a new teacher"""
         args = teacher_parser.parse_args()
+        
+        # Convert the date_of_birth string to a datetime.date object
+        date_of_birth = datetime.strptime(args['date_of_birth'], "%Y-%m-%d").date()
+        
         new_teacher = Teacher(
-            user_id=args['user_id'], 
+            user_id=args['user_id'],
+            class_id=args['class_id'], 
             first_name=args['first_name'], 
-            last_name=args['last_name']
+            last_name=args['last_name'],
+            gender=args['gender'],
+            phone_number=args['phone_number'],
+            date_of_birth=date_of_birth  # Pass the converted date object
         )
         db.session.add(new_teacher)
         db.session.commit()

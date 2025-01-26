@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify
 from flask_restful import Resource, Api, reqparse, fields, marshal_with
+from datetime import datetime
 from models import db, Student, User, Classes
 
 # Define a Blueprint for students
@@ -77,27 +78,23 @@ class StudentListResource(Resource):
     def post(self):
         """Create a new student"""
         args = student_parser.parse_args()
-
-        # Check if the user exists
-        user = User.query.get(args['user_id'])
-        if not user:
-            return {"message": "User not found"}, 404
-
-        # Check if the class exists
-        class_ = Classes.query.get(args['class_id'])
-        if not class_:
-            return {"message": "Class not found"}, 404
+        
+        # Convert date_of_birth and enrollment_year to Python date objects
+        try:
+            date_of_birth = datetime.strptime(args.get('date_of_birth'), '%Y-%m-%d').date() if args.get('date_of_birth') else None
+            enrollment_year = datetime.strptime(args.get('enrollment_year'), '%Y-%m-%d').date() if args.get('enrollment_year') else None
+        except ValueError as e:
+            return {"error": f"Invalid date format: {str(e)}. Use YYYY-MM-DD format."}, 400
 
         new_student = Student(
             user_id=args['user_id'],
-            first_name=args['first_name'],
-            last_name=args['last_name'],
-            date_of_birth=args['date_of_birth'],
-            enrollment_year=args['enrollment_year'],
-            grade_level=args['grade_level'],
-            class_id=args['class_id']
+            first_name=args.get('first_name', ''),
+            last_name=args.get('last_name', ''),
+            date_of_birth=date_of_birth,
+            enrollment_year=enrollment_year,
+            grade_level=args.get('grade_level'),
+            class_id=args.get('class_id')
         )
-
         db.session.add(new_student)
         db.session.commit()
         return new_student, 201

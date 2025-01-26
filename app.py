@@ -26,7 +26,7 @@ def create_app():
         init_roles_and_permissions()
 
     # Initialize routes
-    from routes import users, teachers, students, roles, subjects, fees
+    from routes import users, teachers, students, roles, subjects, fees, classes
 
     # Register blueprints for different routes
     app.register_blueprint(users.auth_bp, url_prefix='/api')
@@ -35,6 +35,7 @@ def create_app():
     app.register_blueprint(roles.role_bp, url_prefix='/api')
     app.register_blueprint(subjects.subject_bp, url_prefix='/api')
     app.register_blueprint(fees.fees_bp, url_prefix='/api')
+    app.register_blueprint(classes.classes_bp, url_prefix='/api')
 
     # List all routes for debugging purposes
     @app.route('/')
