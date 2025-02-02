@@ -80,7 +80,7 @@ const StudentManagement: React.FC = () => {
   
     if (name === "user_id") {
       setFormData({ ...formData, user_id: value });
-      const selectedUser = users.find((user) => user.user_id === value);
+      const selectedUser = users.find((user) => String(user.user_id) === value);
       if (selectedUser) {
         setFormData({
           ...formData,
@@ -104,11 +104,21 @@ const StudentManagement: React.FC = () => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const payload = {
+      user_id: Number(formData.user_id),
+      first_name: formData.first_name,
+      last_name: formData.last_name,
+      date_of_birth: formData.date_of_birth,
+      enrollment_year: formData.enrollment_year,
+      grade_level: formData.grade_level,
+      class_id: Number(formData.class_id),
+    }
     try {
       if (isEditing) {
-        await axios.put(`/api/students/${formData.user_id}`, formData);
+        await axios.put(`/api/students/${payload.user_id}`, payload);
       } else {
-        await axios.post("/api/students", formData);
+        console.log(payload)
+        await axios.post("/api/students", payload);
       }
       fetchStudents();
       resetForm();

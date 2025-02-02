@@ -56,6 +56,7 @@ export interface FormData {
 }
 
 export interface Student {
+  user_id?: number | "";
   student_id: number;
   first_name: string;
   last_name: string;

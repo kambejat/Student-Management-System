@@ -61,16 +61,18 @@ const SubjectsPage: React.FC = () => {
   // Handle form submission
   const handleAddTeacher = async (e: FormEvent) => {
     e.preventDefault();
-
+  
     if (!selectedSubject || !selectedTeacher) {
       setError("Please select a subject and a teacher.");
       return;
     }
-
+  
     try {
-      await axios.put(`/api/subjects/${selectedSubject}`, {
-        teacher: selectedTeacher,
-      });
+      const payload = { teacher: selectedTeacher };
+      console.log("Updating subject with:", payload);
+  
+      await axios.put(`/api/subjects/${selectedSubject}`, payload);
+      
       setSubjects((prev) =>
         prev.map((subject) =>
           subject.subject_id === selectedSubject
@@ -81,11 +83,12 @@ const SubjectsPage: React.FC = () => {
       setSelectedTeacher("");
       setSelectedSubject(null);
       setError("");
-    } catch {
+    } catch (error) {
+      console.error("Error updating subject:", error);
       setError("Failed to update the subject. Please try again.");
     }
   };
-
+  
   const handleClose = () => {
     setIsOpen(false);
   };

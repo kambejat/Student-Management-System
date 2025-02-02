@@ -58,10 +58,6 @@ const TeacherManagementPage: React.FC = () => {
 
   const handleSubmit = async (formData: FormData) => {
     try {
-      // Log form data before submission to check values
-      console.log(formData);
-
-      // Fix the payload to properly map class_id and user_id
       const payload = {
         user_id: formData.user_id,
         class_id: formData.class_id, // Ensure class_id is coming from formData
