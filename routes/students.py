@@ -44,14 +44,22 @@ class StudentResource(Resource):
         """Update a student's details"""
         args = student_parser.parse_args()
         student = Student.query.get(student_id)
+
+        try:
+            # Convert date_of_birth to Python date object
+            date_of_birth = datetime.strptime(args['date_of_birth'], '%Y-%m-%d').date()
+            enrollment_year = datetime.strptime(args['enrollment_year'], '%Y-%m-%d').date()
+        except ValueError as e:
+            return {"error": f"Invalid date format: {str(e)}. Use YYYY-MM-DD format."}, 400
+        
         if not student:
             return {"message": "Student not found"}, 404
 
         student.user_id = args['user_id']
         student.first_name = args['first_name']
         student.last_name = args['last_name']
-        student.date_of_birth = args['date_of_birth']
-        student.enrollment_year = args['enrollment_year']
+        student.date_of_birth = date_of_birth
+        student.enrollment_year =  enrollment_year
         student.grade_level = args['grade_level']
         student.class_id = args['class_id']
 
@@ -70,30 +78,32 @@ class StudentResource(Resource):
 
 
 class StudentListResource(Resource):
+    @marshal_with(student_fields)
     def get(self):
         """Get all students"""
         students = Student.query.all()
         return students
 
+    @marshal_with(student_fields)
     def post(self):
         """Create a new student"""
         args = student_parser.parse_args()
         
         # Convert date_of_birth and enrollment_year to Python date objects
         try:
-            date_of_birth = datetime.strptime(args.get('date_of_birth'), '%Y-%m-%d').date() if args.get('date_of_birth') else None
-            enrollment_year = datetime.strptime(args.get('enrollment_year'), '%Y-%m-%d').date() if args.get('enrollment_year') else None
+            date_of_birth = datetime.strptime(args['date_of_birth'], '%Y-%m-%d').date() if args['date_of_birth'] else None
+            enrollment_year = datetime.strptime(args['enrollment_year'], '%Y-%m-%d').date() if args['enrollment_year'] else None
         except ValueError as e:
             return {"error": f"Invalid date format: {str(e)}. Use YYYY-MM-DD format."}, 400
 
         new_student = Student(
             user_id=args['user_id'],
-            first_name=args.get('first_name', ''),
-            last_name=args.get('last_name', ''),
+            first_name=args['first_name'],
+            last_name=args['last_name'],
             date_of_birth=date_of_birth,
             enrollment_year=enrollment_year,
-            grade_level=args.get('grade_level'),
-            class_id=args.get('class_id')
+            grade_level=args['grade_level'],
+            class_id=args['class_id']
         )
         db.session.add(new_student)
         db.session.commit()
