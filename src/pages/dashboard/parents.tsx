@@ -237,11 +237,11 @@ const ParentManagement: React.FC = () => {
                     }}
                   >
                     <option value="">Assign Parent</option>
-                    {/* {parents.map((parent) => (
-                      <option key={paren} value={parent.user_id}>
+                    {parents.map((parent) => (
+                      <option key={parent.user_id} value={parent.user_id}>
                         {parent.first_name} {parent.last_name}
                       </option>
-                    ))} */}
+                    ))}
                   </select>
                 </td>
               </tr>

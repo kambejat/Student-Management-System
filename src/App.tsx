@@ -9,6 +9,7 @@ import axios from "axios";
 import MenuContent from "./ui/nav/MenuContent";
 import Sidebar from "./ui/nav/Sidebar";
 import Navbar from "./ui/nav/Navbar";
+import StudentPortal from "./pages/portal/portal";
 
 axios.defaults.baseURL = "http://127.0.0.1:5000";
 
@@ -61,6 +62,7 @@ const App: React.FC = () => {
             </PrivateRoute>
           }
         />
+        <Route path="/portal" element={<StudentPortal />} />
       </Routes>
     </>
   );
