@@ -44,7 +44,7 @@ const EventCalendar: React.FC = () => {
     const calendarDays: JSX.Element[] = [];
     // Add empty slots for days before the 1st of the month
     for (let i = 0; i < firstDayOfMonth; i++) {
-      calendarDays.push(<div key={`empty-${i}`} className="border py-1"></div>);
+      calendarDays.push(<div key={`empty-${i}`} className="border dark:text-gray-50 py-1"></div>);
     }
 
     // Add days of the month
@@ -58,7 +58,7 @@ const EventCalendar: React.FC = () => {
         <div
           key={date}
           onClick={() => handleDateClick(date)}
-          className={`py-1 text-center cursor-pointer text-sm ${
+          className={`py-1 text-center dark:text-gray-50 cursor-pointer text-sm ${
             hasEvent ? "bg-[#8b1031]" : ""
           } ${
             selectedDate === date
@@ -179,7 +179,7 @@ const EventCalendar: React.FC = () => {
                   >
                     {event.title}
                   </a>
-                  <p className="text-sm pt-2 leading-4 leading-none text-gray-600 dark:text-gray-300">
+                  <p className="text-sm pt-2 leading-4  text-gray-600 dark:text-gray-300">
                     {event.description}
                   </p>
                 </div>

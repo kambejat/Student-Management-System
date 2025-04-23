@@ -1,11 +1,11 @@
 import React, { ChangeEvent, FormEvent } from "react";
 
 interface User {
-    user_id: string;
-    first_name: string;
-    last_name: string;
-  }
-  
+  user_id: string;
+  first_name: string;
+  last_name: string;
+  role: string;
+}
 
 interface Student {
   student_id: number;
@@ -47,11 +47,11 @@ const AddStudent: React.FC<AddStudentProps> = ({
       {/* Form */}
       <form
         onSubmit={handleSubmit}
-        className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
+        className="bg-white shadow-md rounded-sm m-4 p-2 dark:bg-slate-900"
       >
         <div className="grid grid-cols-2 gap-4">
-          <div className="flex flex-col">
-            <label htmlFor="user_id" className="mb-2 font-semibold">
+          <div className="flex flex-col mb-1">
+            <label htmlFor="user_id" className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
               Select User
             </label>
             <input
@@ -59,21 +59,23 @@ const AddStudent: React.FC<AddStudentProps> = ({
               name="user_id"
               value={formData.user_id}
               onChange={handleInputChange}
-              className="border rounded p-2"
+              className="shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-xs-light"
               required
               placeholder="Select User"
             />
             <datalist id="users">
-              {users.map((user) => (
-                <option key={user.user_id} value={user.user_id}>
-                  {user.first_name} {user.last_name}
-                </option>
-              ))}
+              {users
+                .filter((user) => user.role.toLocaleLowerCase() === "student")
+                .map((user) => (
+                  <option key={user.user_id} value={user.user_id}>
+                    {user.first_name} {user.last_name}
+                  </option>
+                ))}
             </datalist>
           </div>
 
-          <div className="flex flex-col">
-            <label htmlFor="first_name" className="mb-2 font-semibold">
+          <div className="flex flex-col mb-1">
+            <label htmlFor="first_name" className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
               First Name
             </label>
             <input
@@ -82,14 +84,14 @@ const AddStudent: React.FC<AddStudentProps> = ({
               value={formData.first_name}
               onChange={handleInputChange}
               placeholder="First Name"
-              className="border rounded p-2"
+              className="shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-xs-light"
               required
               readOnly
             />
           </div>
 
-          <div className="flex flex-col">
-            <label htmlFor="last_name" className="mb-2 font-semibold">
+          <div className="flex flex-col mb-1">
+            <label htmlFor="last_name" className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
               Last Name
             </label>
             <input
@@ -98,14 +100,14 @@ const AddStudent: React.FC<AddStudentProps> = ({
               value={formData.last_name}
               onChange={handleInputChange}
               placeholder="Last Name"
-              className="border rounded p-2"
+              className="shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-xs-light"
               required
               readOnly
             />
           </div>
 
-          <div className="flex flex-col">
-            <label htmlFor="date_of_birth" className="mb-2 font-semibold">
+          <div className="flex flex-col mb-1">
+            <label htmlFor="date_of_birth" className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
               Date of Birth
             </label>
             <input
@@ -113,13 +115,13 @@ const AddStudent: React.FC<AddStudentProps> = ({
               name="date_of_birth"
               value={formData.date_of_birth}
               onChange={handleInputChange}
-              className="border rounded p-2"
+              className="shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-xs-light"
               required
             />
           </div>
 
-          <div className="flex flex-col">
-            <label htmlFor="enrollment_year" className="mb-2 font-semibold">
+          <div className="flex flex-col mb-1">
+            <label htmlFor="enrollment_year" className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
               Enrollment Year
             </label>
             <input
@@ -127,20 +129,20 @@ const AddStudent: React.FC<AddStudentProps> = ({
               name="enrollment_year"
               value={formData.enrollment_year}
               onChange={handleInputChange}
-              className="border rounded p-2"
+              className="shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-xs-light"
               required
             />
           </div>
 
-          <div className="flex flex-col">
-            <label htmlFor="grade_level" className="mb-2 font-semibold">
+          <div className="flex flex-col mb-1">
+            <label htmlFor="grade_level" className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
               Grade Level
             </label>
             <select
               name="grade_level"
               value={formData.grade_level}
               onChange={handleInputChange}
-              className="border rounded p-2"
+              className="shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-xs-light"
               required
             >
               <option value="">Select Grade</option>
@@ -151,15 +153,15 @@ const AddStudent: React.FC<AddStudentProps> = ({
             </select>
           </div>
 
-          <div className="flex flex-col">
-            <label htmlFor="class_id" className="mb-2 font-semibold">
+          <div className="flex flex-col mb-1">
+            <label htmlFor="class_id" className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
               Class
             </label>
             <select
               name="class_id"
               value={formData.class_id}
               onChange={handleInputChange}
-              className="border rounded p-2"
+              className="shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-xs-light"
               required
             >
               <option value="">Select Class</option>
@@ -172,17 +174,17 @@ const AddStudent: React.FC<AddStudentProps> = ({
           </div>
         </div>
 
-        <div className="mt-4 flex justify-end">
+        <div className="mt-4 flex justify-center">
           <button
             type="button"
             onClick={resetForm}
-            className="mr-2 px-4 py-2 bg-gray-500 text-white rounded"
+            className="mr-2 p-1 w-full bg-red-800 text-white rounded"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="px-4 py-2 bg-blue-500 text-white rounded"
+            className="p-1 w-full bg-blue-800 text-white rounded"
           >
             {isEditing ? "Update" : "Add"} Student
           </button>
