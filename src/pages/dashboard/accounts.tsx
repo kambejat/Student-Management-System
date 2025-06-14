@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import FeesTable from "../../ui/component/Account/Tables";
 import ExpenseTable from "../../ui/component/Account/ExpenseTable";
 import AddExpenseForm from "../../ui/component/Account/AddExpense";
 import AddFeeForm from "../../ui/component/Account/AddFee";
 import { Fee, Expense } from "../../types/types";
+import FeesTable from "../../ui/component/Account/fees/FeesTable";
 
 interface Student {
   student_id: number;
-  name: string;
+  user_id: number;
+  first_name: string;
+  last_name: string;
+  date_of_birth: string;
+  enrollment_year: string;
+  grade_level: string;
+  class_id: number;
 }
 
 const AccountManagement: React.FC = () => {
@@ -167,11 +173,7 @@ const AccountManagement: React.FC = () => {
       {/* Fees Content */}
       {activeTab === "fees" && (
         <div className="mt-1">
-          <FeesTable
-            fees={filteredFees}
-            searchTerm={searchTerm}
-            handleSearch={handleSearch}
-          />
+         <FeesTable />
         </div>
       )}
 

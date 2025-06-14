@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Teacher } from "../../types/types";
 import axios from "axios";
-import { AddIcon, Pen, DeleteIcon } from "../../ui/icon/icons";
+import { AddIcon, Pen, DeleteIcon, ExportIcon } from "../../ui/icon/icons";
 import Modal from "../../ui/component/Modal";
 import AddClassroom from "../../ui/component/classroom/AddClassroom";
 
@@ -106,56 +106,69 @@ const Classroom: React.FC = () => {
   );
 
   return (
-    <div className="flex flex-col p-4">
-      <div className="sm:flex justify-between mb-4">
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="border rounded-md p-2 w-full sm:w-1/2"
-          placeholder="Search classrooms..."
-        />
-        <button
-          onClick={() => {
-            resetForm();
-            toggleModal();
-          }}
-          className="bg-blue-600 text-white px-4 py-2 rounded-md"
-        >
-          <AddIcon className="inline-block mr-2" />
-          Add Class
-        </button>
-      </div>
+    <div className="flex flex-col p-1 bg-gray-50 dark:bg-gray-900 min-h-screen">
+       {/* Header */}
+            <div className="sm:flex justify-between items-center mb-2">
+              <form className="lg:pr-3">
+                <div className="relative mt-1 lg:w-64 xl:w-96">
+                  <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="bg-gray-200 p-1.5 border border-gray-300 text-gray-900 sm:text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                    placeholder="Search for classroom"
+                  />
+                </div>
+              </form>
+              <div className="flex items-center space-x-2 sm:space-x-3">
+                <button
+                  onClick={() => {
+                    resetForm();
+                    toggleModal();
+                  }}
+                  type="button"
+                  className="inline-flex items-center justify-center p-1.5 text-sm font-medium text-white bg-blue-800 rounded-md hover:bg-blue-700"
+                >
+                  <AddIcon className="mr-2 -ml-1 h-5 w-5" />
+                  Add Parent
+                </button>
+                <button className="inline-flex items-center justify-center p-1.5 text-sm font-medium bg-white border border-gray-300 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white">
+                  <ExportIcon className="mr-2 -ml-1 h-5 w-5" />
+                  Export
+                </button>
+              </div>
+            </div>
 
-      <table className="table-auto w-full border-collapse border border-gray-300">
-        <thead className="bg-gray-100">
+     <div className="overflow-x-auto rounded-md shadow">
+     <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+        <thead className="bg-gray-100 dark:bg-gray-700">
           <tr>
-            <th className="border border-gray-300 px-4 py-2">Classroom Name</th>
-            <th className="border border-gray-300 px-4 py-2">Subject</th>
-            <th className="border border-gray-300 px-4 py-2">Teacher</th>
-            <th className="border border-gray-300 px-4 py-2">Schedule Time</th>
-            <th className="border border-gray-300 px-4 py-2">Actions</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Classroom Name</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Subject</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Teacher</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Schedule Time</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Actions</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
           {filteredClassroom.map((classroom) => {
             const subject = subjects.find((s) => s.subject_id === classroom.subject_id);
             const teacher = teachers.find((t) => t.teacher_id === classroom.teacher_id);
 
             return (
               <tr key={classroom.id} className="hover:bg-gray-50">
-                <td className="border border-gray-300 px-4 py-2">{classroom.name}</td>
-                <td className="border border-gray-300 px-4 py-2">{subject?.name || "N/A"}</td>
-                <td className="border border-gray-300 px-4 py-2">
+                <td className="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">{classroom.name}</td>
+                <td className="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">{subject?.name || "N/A"}</td>
+                <td className="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
                   {teacher ? `${teacher.first_name} ${teacher.last_name}` : "N/A"}
                 </td>
-                <td className="border border-gray-300 px-4 py-2">{classroom.schedule_time}</td>
-                <td className="border border-gray-300 px-4 py-2">
+                <td className="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">{classroom.schedule_time}</td>
+                <td className="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
                   <button
                     onClick={() => handleEdit(classroom)}
-                    className="bg-yellow-400 text-white px-2 py-1 rounded-md mr-2"
+                    className="bg-yellow-500 text-center align-center text-white px-2 py-1 rounded-md mr-2"
                   >
-                    <Pen />
+                    <Pen className="text-center" />
                   </button>
                   <button
                     onClick={() => handleDelete(classroom.id)}
@@ -169,6 +182,7 @@ const Classroom: React.FC = () => {
           })}
         </tbody>
       </table>
+     </div>
 
       <Modal 
       Content={

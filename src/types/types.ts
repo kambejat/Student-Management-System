@@ -61,3 +61,33 @@ export interface Student {
   first_name: string;
   last_name: string;
 }
+
+// types.ts
+export type FeeRecord = {
+  fee_id?: number;
+  student_id: number | string;
+  student_name: string;
+  academic_year: string;
+  grade_level: string;
+  total_fee: number;
+  total_paid: number;
+  balance: number;
+  amount_paid?: number;
+  reference_number?: string;
+  payment_date?: string;
+  payment_method?: string;
+};
+
+export type FeeData = {
+  student_id?: string | number | undefined;  // could be undefined
+  student_name?: string;
+ academic_year?: string | undefined; 
+  grade_level: string;
+  total_fee: number;
+  total_paid?: number;
+  balance: number;
+  reference_number?: string;
+  payment_date?: string;
+  payment_method?: string
+  amount_paid?: number | undefined;          // could be 0 or undefined
+};

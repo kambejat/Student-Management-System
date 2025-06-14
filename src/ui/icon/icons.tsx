@@ -190,6 +190,22 @@ export const ExportIcon = ({ className = "" }) => (
   </svg>
 );
 
+export const ImportIcon = ({ className = "" }) => (
+  <svg
+    className={`w-5 h-5 mr-2 -ml-1 ${className}`}
+    fill="currentColor"
+    viewBox="0 0 20 20"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      fillRule="evenodd"
+      d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 10a1 1 0 10-2 0v-3.586l-1.293 1.293a1 1 0 11-1.414-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 8.414V12z"
+      clipRule="evenodd"
+    ></path>
+  </svg>
+);
+
+
 export const Classroom = ({ className = "" }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
