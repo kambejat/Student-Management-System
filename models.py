@@ -212,11 +212,13 @@ class FeesCollection(db.Model):
 
 class Expense(db.Model):
     __tablename__ = 'expenses'
+
     expense_id = db.Column(db.Integer, primary_key=True)
     expense_type = db.Column(db.String(100), nullable=False)  # E.g., "Operational", "Maintenance"
     amount = db.Column(db.Float, nullable=False)
     description = db.Column(db.Text)
     expense_date = db.Column(db.Date, nullable=False)
+    attachment = db.Column(db.String(255), nullable=True)  # Optional file path or URL
     created_at = db.Column(db.DateTime, server_default=db.func.now())
 
     def __repr__(self):
@@ -233,3 +235,47 @@ class YearlyFees(db.Model):
 
     def __repr__(self):
         return f"<YearlyFees {self.academic_year} - {self.grade_level}: {self.fee_amount}>"
+        
+        
+class Grade(db.Model):
+    __tablename__ = 'grades'
+    
+    grade_id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('students.student_id'), nullable=False)
+    subject_id = db.Column(db.Integer, db.ForeignKey('subjects.subject_id'), nullable=False)
+    class_id = db.Column(db.Integer, db.ForeignKey('classes.id'), nullable=False)
+    term = db.Column(db.Enum('Term 1', 'Term 2', 'Term 3'), nullable=False)
+    exam_type = db.Column(db.Enum('Midterm', 'Final', 'Quiz', 'Assignment'), nullable=False)
+    score = db.Column(db.Float, nullable=False)
+    max_score = db.Column(db.Float, nullable=False)
+    percentage = db.Column(db.Float, nullable=True)
+    grade_letter = db.Column(db.String(2), nullable=True)
+    remarks = db.Column(db.String(255), nullable=True)
+    exam_date = db.Column(db.Date, nullable=False)
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+
+    student = db.relationship('Student', backref='grades', lazy=True)
+    subject = db.relationship('Subject', backref='grades', lazy=True)
+    class_ = db.relationship('Classes', backref='grades', lazy=True)
+
+    def calculate_percentage_and_grade(self):
+        if self.score is not None and self.max_score:
+            self.percentage = round((self.score / self.max_score) * 100, 2)
+            self.grade_letter = self.assign_grade_letter(self.percentage)
+
+    def assign_grade_letter(self, percentage):
+        if percentage >= 90:
+            return 'A+'
+        elif percentage >= 80:
+            return 'A'
+        elif percentage >= 70:
+            return 'B'
+        elif percentage >= 60:
+            return 'C'
+        elif percentage >= 50:
+            return 'D'
+        else:
+            return 'F'
+
+    def __repr__(self):
+        return f"<Grade {self.student_id} {self.subject_id} {self.term} {self.grade_letter}>"

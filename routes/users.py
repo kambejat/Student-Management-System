@@ -261,7 +261,7 @@ class UserResource(Resource):
         return {"message": "User deleted successfully"}
 
 
-    
+    @jwt_required
     def put(self, user_id):
         """Update user permissions."""
         user = User.query.get(user_id)

@@ -10,6 +10,10 @@ from init_roles_and_permissions import init_roles_and_permissions  # Ensure this
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
+    app.config["JWT_TOKEN_LOCATION"] = ["headers"]
+    app.config["JWT_HEADER_NAME"] = "Authorization"
+    app.config["JWT_HEADER_TYPE"] = "Bearer"
+
 
     # Initialize database and migrate
     db.init_app(app)
@@ -26,7 +30,8 @@ def create_app():
         init_roles_and_permissions()
 
     # Initialize routes
-    from routes import users, teachers, students, roles, subjects, fees, classes, parents
+    from routes import users, teachers, students, roles, subjects, fees, \
+    classes, parents, grades, expenses
 
     # Register blueprints for different routes
     app.register_blueprint(users.auth_bp, url_prefix='/api')
@@ -37,6 +42,8 @@ def create_app():
     app.register_blueprint(fees.fees_bp, url_prefix='/api')
     app.register_blueprint(classes.classes_bp, url_prefix='/api')
     app.register_blueprint(parents.parent_bp, url_prefix='/api')
+    app.register_blueprint(grades.grades_bp, url_prefix='/api')
+    app.register_blueprint(expenses.expense_bp,url_prefix='/api')
 
     # List all routes for debugging purposes
     @app.route('/')
