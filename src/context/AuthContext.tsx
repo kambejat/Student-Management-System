@@ -158,7 +158,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setToken(null);
     setUser(null);
     toast.info("Logged out successfully");
-    navigate("/login");
+    navigate("/");
   };
 
   const contextData: AuthContextProps = {

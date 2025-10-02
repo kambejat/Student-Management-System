@@ -1,6 +1,6 @@
 // AddForm.tsx
 import React from "react";
-import { Teacher } from "../../../types/Teacher";
+import { Teacher } from "../../../../types/Teacher";
 
 interface AddFormProps {
   subjects: { subject_id: number; name: string; grade_level: string }[];

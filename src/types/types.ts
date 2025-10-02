@@ -1,6 +1,6 @@
 export interface Expense {
-  type: string;
-  name?: string;
+  expense_type: string;
+  expense_id?: number;
   amount: string;
   description: string;
   expense_date?: string;
@@ -91,3 +91,17 @@ export type FeeData = {
   payment_method?: string
   amount_paid?: number | undefined;          // could be 0 or undefined
 };
+
+export interface Grade {
+  grade_id: number;
+  student_id: number;
+  subject_id: number;
+  term: string;
+  exam_type: string;
+  score: number;
+  max_score: number;
+  percentage: number;
+  grade_letter: string;
+  remarks: string;
+  exam_date: string;
+}

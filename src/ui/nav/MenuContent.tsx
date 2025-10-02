@@ -4,10 +4,10 @@ import StudentManagement from "../../pages/dashboard/students";
 import ParentManagement from "../../pages/dashboard/parents";
 import TeacherManagementPage from "../../pages/dashboard/teachers";
 import AccountManagement from "../../pages/dashboard/accounts";
-import SubjectsPage from "../../pages/dashboard/subjects";
 import UserManagement from "../../pages/dashboard/usermanagement";
 import Breadcrumb from "../Breadcrumb";
 import Classroom from "../../pages/dashboard/classroom";
+import AcademicRecords from "../../pages/dashboard/academicrecords";
 
 interface MenuContentProps {
   activeTab: number;
@@ -21,7 +21,7 @@ const MenuContent: React.FC<MenuContentProps> = ({ activeTab }) => {
     3: [{ label: "Home", href: "/dashboard" }, { label: "Parent Management" }],
     4: [{ label: "Home", href: "/dashboard" }, { label: "Teacher Management" }],
     5: [{ label: "Home", href: "/dashboard" }, { label: "Account Management" }],
-    6: [{ label: "Home", href: "/dashboard" }, { label: "Subjects" }],
+    6: [{ label: "Home", href: "/dashboard" }, { label: "Academic Records" }],
     7: [{ label: "Home", href: "/dashboard" }, { label: "User Management" }],
     8: [{ label: "Home", href: "/dashboard" }, { label: "Classroom" }],
   };
@@ -43,7 +43,7 @@ const MenuContent: React.FC<MenuContentProps> = ({ activeTab }) => {
     } else if (activeTab === 5) {
       return <AccountManagement />;
     } else if (activeTab === 6) {
-      return <SubjectsPage />;
+      return <AcademicRecords />;
     } else if (activeTab === 7) {
       return <UserManagement />;
     } else if (activeTab === 8) {

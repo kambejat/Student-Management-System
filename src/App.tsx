@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./App.css";
 import useAuth from "./context/useAuth";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import PrivateRoute from "./context/PrivateRoute";
 import Login from "./pages/Login";
 import SignupForm from "./pages/SignUp";
@@ -35,7 +35,7 @@ const App: React.FC = () => {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={!user ? <Login />: <Navigate to={"dashboard/6/1"} />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<SignupForm />} />
         <Route

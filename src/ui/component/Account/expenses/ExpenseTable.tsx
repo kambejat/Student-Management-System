@@ -1,5 +1,5 @@
 import React from "react";
-import { Expense } from "../../../types/types";
+import { Expense } from "../../../../types/types";
 
 interface ExpenseTableProps {
   expenses: Expense[];
@@ -38,7 +38,7 @@ const ExpenseTable: React.FC<ExpenseTableProps> = ({
                 <thead className="bg-gray-100 dark:bg-gray-700">
                   <tr>
                     <th className="p-2 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
-                      Expense Name
+                      Expense ID
                     </th>
                     <th className="p-2 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
                       Expense Type
@@ -61,10 +61,10 @@ const ExpenseTable: React.FC<ExpenseTableProps> = ({
                       className="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700"
                     >
                         <td className="p-2 text-base font-normal text-gray-500 dark:text-gray-400">
-                        {expense.name}
+                        {expense.expense_id}
                       </td>
                       <td className="p-2 text-base font-normal text-gray-500 dark:text-gray-400">
-                        {expense.type}
+                        {expense.expense_type}
                       </td>
                       <td className="p-2 text-base font-normal text-gray-500 dark:text-gray-400">
                         ${expense.amount}

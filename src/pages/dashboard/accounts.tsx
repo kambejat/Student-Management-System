@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import ExpenseTable from "../../ui/component/Account/ExpenseTable";
+import ExpenseTable from "../../ui/component/Account/expenses/ExpenseTable";
 import AddExpenseForm from "../../ui/component/Account/AddExpense";
 import AddFeeForm from "../../ui/component/Account/AddFee";
 import { Fee, Expense } from "../../types/types";
 import FeesTable from "../../ui/component/Account/fees/FeesTable";
+import RecordExpense from "../../ui/component/Account/expenses/RecordExpense";
 
 interface Student {
   student_id: number;
@@ -116,7 +117,7 @@ const AccountManagement: React.FC = () => {
 
   const filteredExpenses = expenses.filter(
     (expense) =>
-      expense.type.toLowerCase().includes(searchTermExpense.toLowerCase()) ||
+      expense.expense_type.toLowerCase().includes(searchTermExpense.toLowerCase()) ||
       expense.description
         .toLowerCase()
         .includes(searchTermExpense.toLowerCase())
@@ -139,23 +140,23 @@ const AccountManagement: React.FC = () => {
           </button>
           <button
             className={`py-1 px-2 rounded ${
-              activeTab === "expenses"
-                ? "text-blue-600 border-b-2 border-blue-600 rounded-t-md active dark:text-blue-500 dark:border-blue-500"
-                : "bg-gray-200"
-            }`}
-            onClick={() => handleTabClick("expenses")}
-          >
-            Expenses
-          </button>
-          <button
-            className={`py-1 px-2 rounded ${
               activeTab === "addFees"
                 ? "text-blue-600 border-b-2 border-blue-600 rounded-t-md active dark:text-blue-500 dark:border-blue-500"
                 : "bg-gray-200"
             }`}
             onClick={() => handleTabClick("addFees")}
           >
-            Add Fee
+            Capture Individual Fee
+          </button>
+          <button
+            className={`py-1 px-2 rounded ${
+              activeTab === "expenses"
+                ? "text-blue-600 border-b-2 border-blue-600 rounded-t-md active dark:text-blue-500 dark:border-blue-500"
+                : "bg-gray-200"
+            }`}
+            onClick={() => handleTabClick("expenses")}
+          >
+            Expenses List
           </button>
           <button
             className={`py-1 px-2 rounded ${
@@ -165,7 +166,7 @@ const AccountManagement: React.FC = () => {
             }`}
             onClick={() => handleTabClick("addExpenses")}
           >
-            Add Expense
+            Record Expense
           </button>
         </div>
       </div>
@@ -188,7 +189,7 @@ const AccountManagement: React.FC = () => {
         </div>
       )}
       {activeTab === "addExpenses" && (
-        <AddExpenseForm onAddExpense={handleAddExpense} />
+        <RecordExpense />
       )}
       {activeTab === "addFees" && (
         <AddFeeForm students={students} onAddFee={handleAddFee} />

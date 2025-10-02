@@ -1,10 +1,11 @@
 import React, { useState, useEffect, FormEvent } from "react";
 import axios from "axios";
-import Modal from "../../ui/component/Modal";
-import AddForm from "../../ui/component/subjects/AddForm";
-import { AddIcon } from "../../ui/icon/icons";
-import AddSubjectForm from "../../ui/component/subjects/AddSubjectForm";
-import { Teacher } from "../../types/Teacher";
+import Modal from "../../Modal";
+import AddForm from "./AddForm";
+import { AddIcon } from "../../../icon/icons";
+import AddSubjectForm from "./AddSubjectForm";
+import { Teacher } from "../../../../types/Teacher";
+
 interface Subject {
   subject_id: number;
   name: string;

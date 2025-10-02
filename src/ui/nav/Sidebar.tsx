@@ -70,19 +70,20 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <span className={`text-sm ${activeTab === 8 ? "dark:text-[#d11544]  text-[#d11544]" : "text-white"}`}>Classroom</span>
             </li>
             <li
+            className={`${activeTab === 6? activeTabClass : ""} flex items-center rounded-sm p-2 space-x-3 hover:bg-[#db3d3d] dark:hover:bg-[#168677] dark:hover:text-white`}
+            onClick={() => handleTabChange(6)}
+            >
+               <SubjectIcon className={` ${activeTab === 6? activeIconTextClass : "text-white"}`}/>
+                <span className={`text-sm ${activeTab === 6 ? "dark:text-[#d11544]  text-[#d11544]" : "text-white"}`}>Academic Records</span>
+            </li>
+            <li
             className={`${activeTab === 5? activeTabClass : ""} flex items-center rounded-sm p-2 space-x-3 hover:bg-[#db3d3d] dark:hover:bg-[#168677] dark:hover:text-white`}
             onClick={() => handleTabChange(5)}
             >
                <AccountIcon className={` ${activeTab === 5? activeIconTextClass : "text-white"}`}/>
                 <span className={`text-sm ${activeTab === 5 ? "dark:text-[#d11544]  text-[#d11544]" : "text-white"}`}>Account</span>
             </li>
-            <li
-            className={`${activeTab === 6? activeTabClass : ""} flex items-center rounded-sm p-2 space-x-3 hover:bg-[#db3d3d] dark:hover:bg-[#168677] dark:hover:text-white`}
-            onClick={() => handleTabChange(6)}
-            >
-               <SubjectIcon className={` ${activeTab === 6? activeIconTextClass : "text-white"}`}/>
-                <span className={`text-sm ${activeTab === 6 ? "dark:text-[#d11544]  text-[#d11544]" : "text-white"}`}>Subject</span>
-            </li>
+            
             <li
             className={`${activeTab === 7? activeTabClass : ""} flex items-center rounded-sm p-2 space-x-3 hover:bg-[#db3d3d] dark:hover:bg-[#178777] dark:hover:text-white`}
             onClick={() => handleTabChange(7)}

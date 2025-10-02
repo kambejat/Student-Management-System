@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Teacher } from "../../../types/Teacher";
+import { Teacher } from "../../../../types/Teacher";
 
 interface Subject {
     subject_id: number;

@@ -84,7 +84,7 @@ export default function FeesCollectionForm({
   return (
     <section className="bg-white dark:bg-gray-900 rounded-lg shadow p-2">
       <h2 className="mb-2 text-xl font-bold text-gray-900 dark:text-white">
-        Fee Collection Form
+        Capture Individual Fee
       </h2>
       <form onSubmit={handleSubmit}>
         <div className="grid gap-2 sm:grid-cols-2 sm:gap-6">
